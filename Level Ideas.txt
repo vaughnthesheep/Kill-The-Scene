@@ -6,7 +6,7 @@ STAGE 2 : DownTown
 
 STAGE 3 : Union Sound Hall? Burton Cummings?
 
-BOSS : Ari? Burton Cummings?
+BOSS : Voth? Ari? Burton Cummings?
 
 
 
@@ -16,15 +16,15 @@ STAGE 1 : Rural
 
 STAGE 2 : City
 
-STAGE 3 : Shotgun Jimmy Show? Sheepdogs?
+STAGE 3 : Shotgun Jimmy Show, Bar
 
-BOSS : Shotgun Jimmy? one of the bearded sheepdog guys?
+BOSS : Shotgun Jimmy
 
 
 
 LEVEL 3 : Calgary
 
-STAGE 1 : Calgary Stampede?
+STAGE 1 : Calgary Stampede
 
 STAGE 2 : Downtown
 
@@ -46,7 +46,7 @@ BOSS : Grimes
 
 
 
-LEVEL 5 : Seattle
+LEVEL 5 : Seattle (crossing the border scene?)
 
 STAGE 1 : Pike Place Market
 
@@ -66,7 +66,7 @@ STAGE 2 : Suburbs
 
 STAGE 3 : Downtown (looks like osborne)
 
-BOSS : Fred Armisen
+BOSS : Fred Armisen (put a bird on it attack)
 
 
 
@@ -90,12 +90,34 @@ Joke level, skit and then skip to level 9
 
 LEVEL 9 : Chicago
 
-9-1 : Lincoln Park Area
+STAGE 1 : Lincoln Park Area
 
-9-2 : Downtown
+STAGE 2 : Downtown
 
-9-3 : Show, emo kids
+STAGE 3 : Show, emo kids
 
 BOSS : billy corgan, fall out boy, plain white t's
 
 
+
+LEVEL 10 : NEW YORK
+
+STAGE 1 : Queens (small houses, no gaps)
+
+STAGE 2 : THE BRONX (shitty brown appartments)
+
+STAGE 3 : Rap Show
+
+BOSS : ASAP Rocky
+
+
+
+LEVEL 11 : TORONTO (back to canada scene?)
+
+STAGE 1 : G.T.A.
+
+STAGE 2 : Downtown
+
+STAGE 3 : DFA79 Show? Justin Bieber? (bieber fan girl enemies)
+
+BOSS : Death From Above (your new album sucked!) or Justin Bieber
