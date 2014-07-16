@@ -1,11 +1,13 @@
 package GameState;
 
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 public class GameStateManager {
 
 	private ArrayList<GameState> gameStates;
 	private int currentState;
+	private boolean paused = false;
 	public static final int MENUSTATE = 0;
 	public static final int LEVEL1STATE = 1;
 	public GameStateManager()
@@ -25,7 +27,8 @@ public class GameStateManager {
 	
 	public void update()
 	{
-		gameStates.get(currentState).update();
+		if(!paused)
+			gameStates.get(currentState).update();
 	}
 	
 	public void draw(java.awt.Graphics2D g)
@@ -35,6 +38,9 @@ public class GameStateManager {
 	
 	public void keyPressed(int k)
 	{
+		if(k == KeyEvent.VK_ESCAPE) 
+			paused = !paused;
+		
 		gameStates.get(currentState).keyPressed(k);
 	}
 	
