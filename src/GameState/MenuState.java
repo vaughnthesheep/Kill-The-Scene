@@ -2,42 +2,55 @@ package GameState;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
+import java.io.InputStream;
+
+import javax.imageio.ImageIO;
+import javax.print.attribute.standard.Media;
+
+
+
+import main.GamePanel;
+import main.Soundtrack;
 
 import TileMap.Background;
 public class MenuState extends GameState {
 	
-	private Background bg;
-	
 	private int currentChoice = 0;
 	
 	private String[] options = {
-			"Start",
-			"Help",
-			"Quit"
+			"START",
+			"HELP",
+			"QUIT"
 	};
 	
-	private Color titleColor;
-	private Font titleFont;
 	private Font font;
+	private Color color;
+	private InputStream in;
+	private boolean intro;
+	private BufferedImage title;
+	private Soundtrack soundtrack;
 
 	public MenuState(GameStateManager gsm)
 	{
 		this.gsm = gsm;
+		intro = true;
+		color = new Color(168, 16, 0);
+		soundtrack = new Soundtrack("intro.wav");
 		
 		try
 		{
-			bg = new Background("/Backgrounds/menubg.gif", 1);
-			bg.setVector(-0.1, 0);
-			
-			titleColor = new Color(128,0,0);
-			titleFont = new Font("Century Gothic", Font.PLAIN, 28);
-			
-			font = new Font("Arial", Font.PLAIN, 12);
+			in = getClass().getResourceAsStream("/Fonts/Open Sans 600italic.ttf");
+			font = new Font("Arial", Font.PLAIN, 10);
+			title = ImageIO.read(getClass().getResourceAsStream("/Menu/title.gif"));
 		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
 		}
+		
+		soundtrack.play();
 	}
 	
 	public void init()
@@ -47,32 +60,34 @@ public class MenuState extends GameState {
 	
 	public void update()
 	{
-		bg.update();
+		
 	}
 	
 	public void draw(Graphics2D g)
 	{
 		// draw background
-		bg.draw(g);
-		
-		// draw title
-		g.setColor(titleColor);
-		g.setFont(titleFont);
-		g.drawString("KILL THE SCENE", 80, 70);
+		g.setColor(Color.BLACK);
+		g.drawRect(0,0,GamePanel.WIDTH, GamePanel.HEIGHT);
+		g.drawImage(title, 0, 0, null);
 		
 		// draw menu options
 		g.setFont(font);
+		FontMetrics fm   = g.getFontMetrics(font);
+		java.awt.geom.Rectangle2D rect;
 		for(int i = 0; i < options.length; i++)
 		{
 			if(i == currentChoice)
 			{
-				g.setColor(Color.BLACK);
+				g.setColor(Color.WHITE);
 			}
 			else
 			{
-				g.setColor(Color.RED);
+				g.setColor(color);
 			}
-			g.drawString(options[i], 145, 140 + i*15);
+			rect = fm.getStringBounds(options[i], g);
+			int textWidth  = (int)(rect.getWidth());
+			int x = (GamePanel.WIDTH - textWidth) / 2;
+			g.drawString(options[i], x, 190 + i*15);
 		}
 	}
 	

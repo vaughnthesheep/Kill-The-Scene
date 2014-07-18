@@ -38,7 +38,7 @@ public class Player extends MapObject {
 	
 	// num frames per action (check player sprites)
 	private final int[] numFrames = {
-		2, 8, 1, 2, 4, 2, 5
+		2, 4, 1, 3, 1, 3, 3, 1, 2
 	};
 	
 	// animation actions
@@ -46,6 +46,14 @@ public class Player extends MapObject {
 	private static final int WALKING = 1;
 	private static final int JUMPING = 2;
 	private static final int FALLING = 3;
+	private static final int DUCKING = 4;
+	private static final int THROWING = 5;
+	private static final int PUNCHING = 6;
+	private static final int BLOCKING = 7;
+	private static final int DYING = 8;
+	
+	
+	// TEMP
 	private static final int GLIDING = 4;
 	private static final int FIREBALL = 5;
 	private static final int SCRATCHING = 6;
@@ -56,9 +64,9 @@ public class Player extends MapObject {
 		super(tm);
 		
 		width = 30;
-		height = 30;
+		height = 50;
 		cwidth = 20;
-		cheight = 20;
+		cheight = 40;
 		
 		moveSpeed = 0.3;
 		maxSpeed = 1.6;
@@ -84,14 +92,14 @@ public class Player extends MapObject {
 		try{
 			BufferedImage spritesheet = ImageIO.read(
 					getClass().getResourceAsStream(
-							"/Sprites/Player/playersprites.gif"));
+							"/Sprites/Player/spritesheet.gif"));
 			sprites = new ArrayList<BufferedImage[]>();
 			for(int i = 0; i < 7; i ++) //!!!!!!!!! 7 = number of different animations, change for other players.
 			{
 				BufferedImage[] bi = new BufferedImage[numFrames[i]];
 				for(int j = 0; j < numFrames[i]; j++)
 				{
-					if(i != SCRATCHING)
+					if(i != THROWING && i != PUNCHING && i != BLOCKING && i != DYING)
 					{// sprites for scratch are 60 px wide, not 30
 						bi[j] = spritesheet.getSubimage(j*width, i*height, width, height);
 					}
@@ -293,7 +301,7 @@ public class Player extends MapObject {
 				currentAction = FIREBALL;
 				animation.setFrames(sprites.get(FIREBALL));
 				animation.setDelay(100);
-				width = 30;
+				width = 60;
 			}
 		}
 		else if(dy > 0)
@@ -304,7 +312,7 @@ public class Player extends MapObject {
 				{
 					currentAction = GLIDING;
 					animation.setFrames(sprites.get(GLIDING));
-					animation.setDelay(100);
+					animation.setDelay(-1);
 					width = 30;
 				}
 			}
@@ -332,7 +340,7 @@ public class Player extends MapObject {
 			{
 				currentAction = WALKING;
 				animation.setFrames(sprites.get(WALKING));
-				animation.setDelay(40);
+				animation.setDelay(100);
 				width = 30;
 			}
 		}
@@ -445,4 +453,5 @@ public class Player extends MapObject {
 		
 		super.draw(g);
 	}
+	
 }
