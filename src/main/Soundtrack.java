@@ -8,18 +8,21 @@ import sun.applet.Main;
 
 public class Soundtrack {
 	
-	private String song;
-	private static Clip clip;
+	private static Clip song;
 	
 	
-	public Soundtrack(String song)
+	public Soundtrack()
+	{
+		
+	}
+	
+	public static void setSong(String s)
 	{
 		try
 		{
-			this.song = song;
-			clip = AudioSystem.getClip();
-			AudioInputStream inputStream = AudioSystem.getAudioInputStream(Main.class.getClass().getResourceAsStream("/Music/" + song));
-			clip.open(inputStream);
+			song = AudioSystem.getClip();
+			AudioInputStream inputStream = AudioSystem.getAudioInputStream(Main.class.getClass().getResourceAsStream("/Music/" + s));
+			song.open(inputStream);
 		}
 		catch(Exception e)
 		{
@@ -29,12 +32,12 @@ public class Soundtrack {
 	
 	public static synchronized void play()
 	{
-		clip.loop(-1);
+		song.loop(-1);
 	}
 	
 	public static synchronized void stop()
 	{
-		clip.stop();
+		song.stop();
 	}
 
 }

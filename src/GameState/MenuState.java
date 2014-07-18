@@ -30,14 +30,13 @@ public class MenuState extends GameState {
 	private InputStream in;
 	private boolean intro;
 	private BufferedImage title;
-	private Soundtrack soundtrack;
 
 	public MenuState(GameStateManager gsm)
 	{
 		this.gsm = gsm;
 		intro = true;
 		color = new Color(168, 16, 0);
-		soundtrack = new Soundtrack("intro.wav");
+		Soundtrack.setSong("intro.wav");
 		
 		try
 		{
@@ -50,7 +49,7 @@ public class MenuState extends GameState {
 			e.printStackTrace();
 		}
 		
-		soundtrack.play();
+		Soundtrack.play();
 	}
 	
 	public void init()
