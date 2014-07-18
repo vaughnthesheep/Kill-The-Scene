@@ -1,5 +1,6 @@
 package Entity;
 
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -8,6 +9,13 @@ import javax.imageio.ImageIO;
 public class MenuPlayer {
 	
 	private ArrayList<BufferedImage[]> sprites;
+	public boolean walking;
+	public boolean idle;
+	private int previous;
+	private int currentAction;
+	private Animation animation;
+	private int x;
+	private int y;
 	
 	// num frames per action (check player sprites)
 	private final int[] numFrames = {
@@ -25,8 +33,11 @@ public class MenuPlayer {
 	private static final int BLOCKING = 7;
 	private static final int DYING = 8;
 	
-	public MenuPlayer()
+	public MenuPlayer(int x, int y)
 	{
+		this.x = x;
+		this.y = y;
+		
 		try
 		{
 			
@@ -55,10 +66,22 @@ public class MenuPlayer {
 		{
 			e.printStackTrace();
 		}
+		animation = new Animation();
+		animation.setFrames(sprites.get(WALKING));
+		animation.setDelay(100);
 	}
 	
-	public void changeSprite()
+	public void update()
 	{
-		
+		x += 1;
+		animation.update();
+	}
+	
+	public void draw(Graphics2D g)
+	{
+		g.drawImage(animation.getImage(),
+				(int)(x),
+				(int)(y),
+				null);
 	}
 }
