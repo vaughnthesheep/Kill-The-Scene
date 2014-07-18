@@ -10,7 +10,6 @@ public class MenuPlayer {
 	
 	private ArrayList<BufferedImage[]> sprites;
 	public boolean walking;
-	public boolean idle;
 	private int previous;
 	private int currentAction;
 	private Animation animation;
@@ -69,11 +68,25 @@ public class MenuPlayer {
 		animation = new Animation();
 		animation.setFrames(sprites.get(WALKING));
 		animation.setDelay(100);
+		walking = true;
+		currentAction = WALKING;
 	}
 	
 	public void update()
 	{
-		x += 1;
+		if(walking)
+		{
+			x += 1;
+		}
+		else
+		{
+			if(currentAction != IDLE)
+			{
+				currentAction = IDLE;
+				animation.setFrames(sprites.get(IDLE));
+				animation.setDelay(400);
+			}
+		}
 		animation.update();
 	}
 	
@@ -83,5 +96,10 @@ public class MenuPlayer {
 				(int)(x),
 				(int)(y),
 				null);
+	}
+	
+	public int getx()
+	{
+		return x;
 	}
 }

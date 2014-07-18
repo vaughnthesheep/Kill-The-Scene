@@ -61,18 +61,24 @@ public class MenuState extends GameState {
 			e.printStackTrace();
 		}
 		
-		player = new MenuPlayer(0, 150);
+		player = new MenuPlayer(-30, 100);
 		
 	}
 	
 	
 	public void init()
 	{
-		
+		Soundtrack.play();
 	}
 	
 	public void update()
 	{
+		if(player.getx() >= (GamePanel.WIDTH / 2 - 15))
+		{
+			player.walking = false;
+			intro = false;
+			init();
+		}
 		player.update();
 	}
 	
@@ -80,8 +86,10 @@ public class MenuState extends GameState {
 	{
 		// draw background
 		g.setColor(Color.BLACK);
-		g.drawRect(0,0,GamePanel.WIDTH, GamePanel.HEIGHT);
-		//draw player
+		g.fillRect(0,0,GamePanel.WIDTH, GamePanel.HEIGHT);
+		g.setColor(color);
+		g.fillRect(0, 90, GamePanel.WIDTH, 70);
+		player.draw(g);
 		
 		if(!intro)
 		{
@@ -106,7 +114,6 @@ public class MenuState extends GameState {
 				g.drawString(options[i], x, 190 + i*15);
 			}
 		}
-		player.draw(g);
 	}
 	
 	private void select()
