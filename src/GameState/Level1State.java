@@ -20,10 +20,12 @@ public class Level1State extends GameState {
 	private HUD hud;
 	private ArrayList<Enemy> enemies;
 	private ArrayList<Explosion> explosions;
+	//private boolean initialized = false;
 
 	public Level1State(GameStateManager gsm)
 	{
 		this.gsm = gsm;
+		init();
 	}
 	
 	public void init()

@@ -114,6 +114,7 @@ public class MenuState extends GameState {
 		if(currentChoice == 0)
 		{
 			gsm.setState(GameStateManager.LEVEL1STATE);
+			
 		}
 		if(currentChoice == 1)
 		{
