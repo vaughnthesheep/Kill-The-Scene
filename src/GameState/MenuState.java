@@ -3,7 +3,6 @@ package GameState;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.io.InputStream;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import main.GamePanel;
@@ -177,6 +176,12 @@ public class MenuState extends GameState {
 	
 	public void keyReleased(int k)
 	{
+		
+	}
+
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
 		
 	}
 	

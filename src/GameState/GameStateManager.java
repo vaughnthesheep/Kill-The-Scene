@@ -10,6 +10,7 @@ public class GameStateManager {
 	private ArrayList<GameState> gameStates;
 	private int currentState;
 	private boolean paused = false;
+	private boolean initializing = false;
 	public static final int STARTUP = -1;
 	public static final int MENUSTATE = 0;
 	public static final int LEVEL1STATE = 1;
@@ -30,17 +31,21 @@ public class GameStateManager {
 			Soundtrack.stop();
 		}
 		currentState = state;
+		initializing = true;
+		gameStates.get(currentState).init();
+		initializing = false;
 	}
 	
 	public void update()
 	{
-		if(!paused)
+		if(!paused && !initializing)
 			gameStates.get(currentState).update();
 	}
 	
 	public void draw(java.awt.Graphics2D g)
 	{
-		gameStates.get(currentState).draw(g);
+		if(!initializing)
+			gameStates.get(currentState).draw(g);
 	}
 	
 	public void keyPressed(int k)
