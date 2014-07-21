@@ -10,7 +10,6 @@ public class MenuPlayer {
 	
 	private ArrayList<BufferedImage[]> sprites;
 	public boolean walking;
-	private int previous;
 	private int currentAction;
 	private Animation animation;
 	public int x;

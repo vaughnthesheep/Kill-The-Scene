@@ -30,7 +30,6 @@ public class GameStateManager {
 			Soundtrack.stop();
 		}
 		currentState = state;
-		gameStates.get(currentState).init();
 	}
 	
 	public void update()

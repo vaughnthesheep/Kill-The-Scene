@@ -6,7 +6,6 @@ import java.io.InputStream;
 public class CustomFont {
 	
 	private InputStream in;
-	private int size;
 	private Font font;
 	
 	public CustomFont()

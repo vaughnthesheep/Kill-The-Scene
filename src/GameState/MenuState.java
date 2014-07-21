@@ -23,7 +23,6 @@ public class MenuState extends GameState {
 	
 	private Font font;
 	private Color color;
-	private InputStream in;
 	private boolean intro;
 	private BufferedImage title;
 	private ArrayList<BufferedImage> titlePieces;
@@ -38,7 +37,6 @@ public class MenuState extends GameState {
 		
 		try
 		{
-			in = getClass().getResourceAsStream("/Fonts/Open Sans 600italic.ttf");
 			font = new Font("Arial", Font.PLAIN, 10);
 			title = ImageIO.read(getClass().getResourceAsStream("/Menu/title.gif"));
 			
@@ -55,12 +53,6 @@ public class MenuState extends GameState {
 		}
 		
 		menuplayer = new MenuPlayer(-30, 100);
-		
-	}
-	
-	
-	public void init()
-	{
 		
 	}
 	
