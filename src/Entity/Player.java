@@ -12,26 +12,23 @@ public class Player extends MapObject {
 	
 	private int health;
 	private int maxHealth;
-	private int fire;
-	private int maxFire;
+	private int strength;
+	private int maxStrength;
 	private boolean dead;
 	private boolean flinching;
 	private long flinchTimer;
 	private long maxFlinchTime;
 	
 	// fireball
-	private boolean firing;
-	private int fireCost;
-	private int fireBallDamage;
-	private ArrayList<FireBall> fireBalls;
+	private boolean throwing;
+	private int projectileCost;
+	private int projectileDamage;
+	private ArrayList<Projectile> projectiles;
 	
 	// scratch
-	private boolean scratching;
-	private int scratchDamage;
-	private int scratchRange;
-	
-	// gliding
-	private boolean gliding;
+	private boolean punching;
+	private int punchDamage;
+	private int punchRange;
 	
 	// animations
 	private ArrayList<BufferedImage[]> sprites;
@@ -53,10 +50,6 @@ public class Player extends MapObject {
 	private static final int DYING = 8;
 	
 	
-	// TEMP
-	private static final int GLIDING = 4;
-	private static final int FIREBALL = 5;
-	private static final int SCRATCHING = 6;
 	
 	
 	public Player(TileMap tm)
@@ -79,14 +72,13 @@ public class Player extends MapObject {
 		
 		facingRight = true;
 		
-		health = maxHealth = 5;
-		fire = maxFire = 2500;
-		fireCost = 200;
-		fireBallDamage = 5;
-		fireBalls = new ArrayList<FireBall>();
-		
-		scratchDamage = 8;
-		scratchRange = 40;
+		health = maxHealth = 25;
+		strength = maxStrength = 25;
+		projectileCost = 5;
+		projectileDamage = 5;
+		projectiles = new ArrayList<Projectile>();
+		punchDamage = 5;
+		punchRange = 40;
 		
 		// load sprites
 		try{
@@ -125,23 +117,19 @@ public class Player extends MapObject {
 	
 	public int getHealth() {return health;}
 	public int getMaxHealth() {return maxHealth;}
-	public int getFire() {return fire;}
-	public int getMaxFire() {return maxFire;}
+	public int getStrength() {return strength;}
+	public int getMaxStrength() {return maxStrength;}
 	
-	public void setFiring()
+	public void setThrowing()
 	{
-		firing = true;
+		throwing = true;
 	}
 	
-	public void setScratching()
+	public void setPunching()
 	{
-		scratching = true;
+		punching = true;
 	}
 	
-	public void setGliding(boolean b)
-	{
-		gliding = b;
-	}
 	
 	private void getNextPosition()
 	{
@@ -183,7 +171,7 @@ public class Player extends MapObject {
 		}
 		
 		// cannot move while attacking (unless in air)
-		if((currentAction == SCRATCHING || currentAction == FIREBALL) && !(jumping || falling))
+		if((currentAction == PUNCHING || currentAction == THROWING || currentAction == DUCKING) && !(jumping || falling))
 		{
 			dx = 0;
 		}
@@ -198,14 +186,7 @@ public class Player extends MapObject {
 		// falling
 		if(falling)
 		{
-			if(dy > 0 && gliding)
-			{
-				dy += fallSpeed * 0.1;
-			}
-			else
-			{
-				dy += fallSpeed;
-			}
+			dy += fallSpeed;
 			
 			if(dy > 0)
 			{
@@ -230,45 +211,41 @@ public class Player extends MapObject {
 		setPosition(xtemp, ytemp);
 		
 		// check attack has stopped
-		if(currentAction == SCRATCHING)
+		if(currentAction == PUNCHING)
 		{
 			if(animation.hasPlayedOnce())
 			{
-				scratching = false;
+				punching = false;
 			}
 		}
-		if(currentAction == FIREBALL)
+		if(currentAction == THROWING)
 		{
 			if(animation.hasPlayedOnce())
 			{
-				firing = false;
+				throwing = false;
 			}
 		}
 		
-		// fireball attack
-		fire += 1;
-		if(fire > maxFire)
+		// projectile attack
+		
+		if(throwing && currentAction != THROWING)
 		{
-			fire = maxFire;
-		}
-		if(firing && currentAction != FIREBALL)
-		{
-			if(fire > fireCost)
+			if(strength > projectileCost)
 			{
-				fire -= fireCost;
-				FireBall fb = new FireBall(tileMap, facingRight);
-				fb.setPosition(x, y);
-				fireBalls.add(fb);
+				strength -= projectileCost;
+				Projectile p = new Projectile(tileMap, facingRight);
+				p.setPosition(x, y);
+				projectiles.add(p);
 			}
 		}
 		
 		// update fireballs
-		for(int i = 0; i < fireBalls.size(); i++)
+		for(int i = 0; i < projectiles.size(); i++)
 		{
-			fireBalls.get(i).update();
-			if(fireBalls.get(i).shouldRemove())
+			projectiles.get(i).update();
+			if(projectiles.get(i).shouldRemove())
 			{
-				fireBalls.remove(i);
+				projectiles.remove(i);
 				i--;
 			}
 		}
@@ -284,39 +261,29 @@ public class Player extends MapObject {
 		}
 		
 		// set animation
-		if(scratching)
+		if(punching)
 		{
-			if(currentAction != SCRATCHING)
+			if(currentAction != PUNCHING)
 			{
-				currentAction = SCRATCHING;
-				animation.setFrames(sprites.get(SCRATCHING));
+				currentAction = PUNCHING;
+				animation.setFrames(sprites.get(PUNCHING));
 				animation.setDelay(50);
 				width = 60;
 			}
 		}
-		else if(firing)
+		else if(throwing)
 		{
-			if(currentAction != FIREBALL)
+			if(currentAction != THROWING)
 			{
-				currentAction = FIREBALL;
-				animation.setFrames(sprites.get(FIREBALL));
+				currentAction = THROWING;
+				animation.setFrames(sprites.get(THROWING));
 				animation.setDelay(100);
 				width = 60;
 			}
 		}
 		else if(dy > 0)
 		{
-			if(gliding)
-			{
-				if(currentAction != GLIDING)
-				{
-					currentAction = GLIDING;
-					animation.setFrames(sprites.get(GLIDING));
-					animation.setDelay(-1);
-					width = 30;
-				}
-			}
-			else if(currentAction != FALLING)
+			if(currentAction != FALLING)
 			{
 				currentAction = FALLING;
 				animation.setFrames(sprites.get(FALLING));
@@ -358,7 +325,7 @@ public class Player extends MapObject {
 		animation.update();
 		
 		// set direction
-		if(currentAction != SCRATCHING && currentAction != FIREBALL)
+		if(currentAction != PUNCHING && currentAction != THROWING)
 		{
 			if(right) facingRight = true;
 			if(left) facingRight = false;
@@ -373,48 +340,42 @@ public class Player extends MapObject {
 			Enemy e = enemies.get(i);
 			
 			// check scratch
-			if(scratching)
+			if(punching)
 			{
 				if(facingRight)
 				{
 					if(
 						e.getx() > x &&
-						e.getx() < x + scratchRange &&
+						e.getx() < x + punchRange &&
 						e.gety() > y - height/2 &&
 						e.gety() < y + height/2
 					){
-						e.hit(scratchDamage);
+						e.hit(punchDamage);
 					}
 				}
 				else
 				{
 					if(
 						e.getx() < x &&
-						e.getx() > x - scratchRange &&
+						e.getx() > x - punchRange &&
 						e.gety() > y - height/2 &&
 						e.gety() < y + height/2
 					){
-						e.hit(scratchDamage);
+						e.hit(punchDamage);
 					}
 				}
 			}
 			
-			// fireballs
-			for(int j = 0; j < fireBalls.size(); j++)
+			// projectiles
+			for(int j = 0; j < projectiles.size(); j++)
 			{
-				if(fireBalls.get(j).intersects(e))
+				if(projectiles.get(j).intersects(e))
 				{
-					e.hit(fireBallDamage);
-					fireBalls.get(j).setHit();
+					e.hit(projectileDamage);
+					projectiles.get(j).setHit();
 				}
 			}
 			
-			// CHECK THIS, MOVE TO ENEMY CLASS?
-			
-			if(intersects(e))
-			{
-				hit(e.getDamage());
-			}
 		}
 		
 	}
@@ -434,11 +395,11 @@ public class Player extends MapObject {
 		// IMPORTANT FIRST METHOD
 		setMapPosition();
 		
-		// Draw fireballs
+		// Draw projectiles
 		
-		for(int i = 0; i < fireBalls.size(); i++)
+		for(int i = 0; i < projectiles.size(); i++)
 		{
-			fireBalls.get(i).draw(g);
+			projectiles.get(i).draw(g);
 		}
 		
 		// Blinks (does not draw half the time) if flinching

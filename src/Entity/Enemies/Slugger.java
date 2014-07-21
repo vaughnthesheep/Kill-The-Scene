@@ -24,9 +24,9 @@ public class Slugger extends Enemy{
 		maxFlinchTime = 400;
 		
 		width = 30;
-		height = 30;
+		height = 50;
 		cwidth = 20;
-		cheight = 20;
+		cheight = 40;
 		
 		health = maxHealth = 2;
 		damage = 1;
