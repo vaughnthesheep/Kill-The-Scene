@@ -13,8 +13,8 @@ public class MenuPlayer {
 	private int previous;
 	private int currentAction;
 	private Animation animation;
-	private int x;
-	private int y;
+	public int x;
+	public int y;
 	
 	// num frames per action (check player sprites)
 	private final int[] numFrames = {

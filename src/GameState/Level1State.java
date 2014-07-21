@@ -8,6 +8,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 import main.GamePanel;
+import main.Soundtrack;
 
 
 
@@ -23,7 +24,6 @@ public class Level1State extends GameState {
 	public Level1State(GameStateManager gsm)
 	{
 		this.gsm = gsm;
-		init();
 	}
 	
 	public void init()
@@ -43,6 +43,8 @@ public class Level1State extends GameState {
 		populateEnemies();
 		
 		explosions = new ArrayList<Explosion>();
+		Soundtrack.setSong("Charlsewood.wav");
+		Soundtrack.play();
 	}
 	
 	private void populateEnemies()
@@ -131,6 +133,8 @@ public class Level1State extends GameState {
 		// draw HUD
 		hud.draw(g);
 	}
+	
+	
 	public void keyPressed(int k)
 	{
 		if(k == KeyEvent.VK_LEFT) player.setLeft(true);

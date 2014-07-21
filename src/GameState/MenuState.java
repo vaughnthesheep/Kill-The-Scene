@@ -3,20 +3,14 @@ package GameState;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
-
 import javax.imageio.ImageIO;
-import javax.print.attribute.standard.Media;
-
-
-
 import main.GamePanel;
 import main.Soundtrack;
-
 import Entity.MenuPlayer;
-import TileMap.Background;
+
+
 public class MenuState extends GameState {
 	
 	private int currentChoice = 0;
@@ -34,14 +28,13 @@ public class MenuState extends GameState {
 	private BufferedImage title;
 	private ArrayList<BufferedImage> titlePieces;
 	
-	private MenuPlayer player;
+	private MenuPlayer menuplayer;
 
 	public MenuState(GameStateManager gsm)
 	{
 		this.gsm = gsm;
 		intro = true;
 		color = new Color(168, 16, 0);
-		Soundtrack.setSong("intro.wav");
 		
 		try
 		{
@@ -61,25 +54,25 @@ public class MenuState extends GameState {
 			e.printStackTrace();
 		}
 		
-		player = new MenuPlayer(-30, 100);
+		menuplayer = new MenuPlayer(-30, 100);
 		
 	}
 	
 	
 	public void init()
 	{
-		Soundtrack.play();
+		
 	}
 	
 	public void update()
 	{
-		if(player.getx() >= (GamePanel.WIDTH / 2 - 15))
+		if(menuplayer.getx() >= (GamePanel.WIDTH / 2 - 17))
 		{
-			player.walking = false;
-			intro = false;
-			init();
+			menuplayer.walking = false;
+			menuplayer.x = GamePanel.WIDTH / 2 - 17;
+			start();
 		}
-		player.update();
+		menuplayer.update();
 	}
 	
 	public void draw(Graphics2D g)
@@ -89,7 +82,7 @@ public class MenuState extends GameState {
 		g.fillRect(0,0,GamePanel.WIDTH, GamePanel.HEIGHT);
 		g.setColor(color);
 		g.fillRect(0, 90, GamePanel.WIDTH, 70);
-		player.draw(g);
+		menuplayer.draw(g);
 		
 		if(!intro)
 		{
@@ -132,11 +125,29 @@ public class MenuState extends GameState {
 		}
 	}
 	
+	public void start()
+	{
+		if(intro)
+		{
+			Soundtrack.setSong("Intro.wav");
+			Soundtrack.play();
+			intro = false;
+		}
+	}
+	
 	public void keyPressed(int k)
 	{
 		if(k == KeyEvent.VK_ENTER)
 		{
-			select();
+			if(!intro)
+			{
+				select();
+			}
+			else
+			{
+				start();
+				menuplayer.x = GamePanel.WIDTH / 2 - 15;
+			}
 		}
 		if(k == KeyEvent.VK_UP)
 		{
