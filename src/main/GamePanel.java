@@ -101,6 +101,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 	private void draw()
 	{
 		gsm.draw(g);
+		
+		if(gsm.isPaused())
+		{
+			g.drawString("Game Paused", (g.getDeviceConfiguration().getBounds().width / 2) - 35, g.getDeviceConfiguration().getBounds().height / 2);
+		}
 	}
 	
 	private void drawToScreen()

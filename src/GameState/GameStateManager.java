@@ -30,8 +30,8 @@ public class GameStateManager {
 		{
 			Soundtrack.stop();
 		}
-		currentState = state;
 		initializing = true;
+		currentState = state;
 		gameStates.get(currentState).init();
 		initializing = false;
 	}
@@ -59,5 +59,10 @@ public class GameStateManager {
 	public void keyReleased(int k)
 	{
 		gameStates.get(currentState).keyReleased(k);
+	}
+
+	public boolean isPaused() 
+	{
+		return paused;
 	}
 }
