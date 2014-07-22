@@ -14,6 +14,7 @@ public class GameStateManager {
 	public static final int STARTUP = -1;
 	public static final int MENUSTATE = 0;
 	public static final int LEVEL1STATE = 1;
+	public static final int PAUSESTATE = 2;
 	
 	public GameStateManager()
 	{
@@ -21,6 +22,7 @@ public class GameStateManager {
 		gameStates = new ArrayList<GameState>();
 		gameStates.add(new MenuState(this));
 		gameStates.add(new Level1State(this));
+		gameStates.add(new PauseState(this));
 		setState(MENUSTATE);
 	}
 	
@@ -33,6 +35,13 @@ public class GameStateManager {
 		initializing = true;
 		currentState = state;
 		gameStates.get(currentState).init();
+		initializing = false;
+	}
+	
+	public void resumeState(int state)
+	{
+		initializing = true;
+		currentState = state;
 		initializing = false;
 	}
 	
@@ -51,7 +60,18 @@ public class GameStateManager {
 	public void keyPressed(int k)
 	{
 		if(k == KeyEvent.VK_ESCAPE) 
+		{
+			if(paused)
+			{
+				resumeState(1);
+			}
+			else
+			{
+				setState(2);
+			}
+			
 			paused = !paused;
+		}
 		
 		gameStates.get(currentState).keyPressed(k);
 	}
