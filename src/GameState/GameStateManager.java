@@ -9,6 +9,7 @@ public class GameStateManager {
 
 	private ArrayList<GameState> gameStates;
 	private int currentState;
+	public int previousState;
 	private boolean paused = false;
 	private boolean initializing = false;
 	public static final int STARTUP = -1; // not included in gamestate arraylist
@@ -44,6 +45,7 @@ public class GameStateManager {
 			Soundtrack.stop();
 		}
 		initializing = true;
+		previousState = currentState;
 		currentState = state;
 		gameStates.get(currentState).init();
 		initializing = false;
