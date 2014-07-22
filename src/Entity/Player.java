@@ -325,7 +325,7 @@ public class Player extends MapObject {
 				animation.setFrames(sprites.get(DUCKING));
 				animation.setDelay(-1);
 				width = 30;
-				cheight = CHEIGHT_DUCKING;
+				//cheight = CHEIGHT_DUCKING;
 			}
 		}
 		else
@@ -336,6 +336,7 @@ public class Player extends MapObject {
 				animation.setFrames(sprites.get(IDLE));
 				animation.setDelay(400);
 				width = 30;
+				//cheight = CHEIGHT_DEFAULT;
 			}
 		}
 		
