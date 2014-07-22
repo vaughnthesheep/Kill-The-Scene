@@ -50,8 +50,18 @@ public class GameStateManager {
 	
 	public void keyPressed(int k)
 	{
-		if(k == KeyEvent.VK_ESCAPE) 
+		if(k == KeyEvent.VK_ESCAPE && currentState != MENUSTATE)
+		{
 			paused = !paused;
+			if(paused == true)
+			{
+				Soundtrack.stop();
+			}
+			else
+			{
+				Soundtrack.play();
+			}
+		}
 		
 		gameStates.get(currentState).keyPressed(k);
 	}
