@@ -30,6 +30,10 @@ public class Player extends MapObject {
 	private int punchDamage;
 	private int punchRange;
 	
+	// block
+	private boolean blocking;
+	private int blockAmount;
+	
 	// animations
 	private ArrayList<BufferedImage[]> sprites;
 	
@@ -49,7 +53,8 @@ public class Player extends MapObject {
 	private static final int BLOCKING = 7;
 	private static final int DYING = 8;
 	
-	
+	private static final int CHEIGHT_DEFAULT = 40;
+	private static final int CHEIGHT_DUCKING = 20;
 	
 	
 	public Player(TileMap tm)
@@ -59,7 +64,7 @@ public class Player extends MapObject {
 		width = 30;
 		height = 50;
 		cwidth = 20;
-		cheight = 40;
+		cheight = CHEIGHT_DEFAULT;
 		
 		moveSpeed = 0.3;
 		maxSpeed = 1.6;
@@ -74,11 +79,15 @@ public class Player extends MapObject {
 		
 		health = maxHealth = 25;
 		strength = maxStrength = 25;
+		
 		projectileCost = 5;
 		projectileDamage = 5;
 		projectiles = new ArrayList<Projectile>();
+		
 		punchDamage = 5;
 		punchRange = 40;
+		
+		blockAmount = 5;
 		
 		// load sprites
 		try{
@@ -86,7 +95,7 @@ public class Player extends MapObject {
 					getClass().getResourceAsStream(
 							"/Sprites/Player/spritesheet.gif"));
 			sprites = new ArrayList<BufferedImage[]>();
-			for(int i = 0; i < 7; i ++) //!!!!!!!!! 7 = number of different animations, change for other players.
+			for(int i = 0; i < 9; i ++)
 			{
 				BufferedImage[] bi = new BufferedImage[numFrames[i]];
 				for(int j = 0; j < numFrames[i]; j++)
@@ -122,12 +131,22 @@ public class Player extends MapObject {
 	
 	public void setThrowing()
 	{
+		if(currentAction == PUNCHING || currentAction == BLOCKING)
+			return;
 		throwing = true;
 	}
 	
 	public void setPunching()
 	{
+		if(currentAction == THROWING || currentAction == BLOCKING)
+			return;
 		punching = true;
+	}
+	public void setBlocking(boolean block)
+	{
+		if(currentAction == PUNCHING || currentAction == THROWING)
+			return;
+		blocking = block;
 	}
 	
 	
@@ -170,8 +189,8 @@ public class Player extends MapObject {
 			}
 		}
 		
-		// cannot move while attacking (unless in air)
-		if((currentAction == PUNCHING || currentAction == THROWING || currentAction == DUCKING) && !(jumping || falling))
+		// cannot move while attacking or ducking (unless in air)
+		if((currentAction == PUNCHING || currentAction == THROWING || currentAction == DUCKING || currentAction == BLOCKING) && !(jumping || falling))
 		{
 			dx = 0;
 		}
@@ -230,7 +249,7 @@ public class Player extends MapObject {
 		
 		if(throwing && currentAction != THROWING)
 		{
-			if(strength > projectileCost)
+			if(strength >= projectileCost)
 			{
 				strength -= projectileCost;
 				Projectile p = new Projectile(tileMap, facingRight);
@@ -281,6 +300,16 @@ public class Player extends MapObject {
 				width = 60;
 			}
 		}
+		else if(blocking)
+		{
+			if(currentAction != BLOCKING)
+			{
+				currentAction = BLOCKING;
+				animation.setFrames(sprites.get(BLOCKING));
+				animation.setDelay(-1);
+				width = 60;
+			}
+		}
 		else if(dy > 0)
 		{
 			if(currentAction != FALLING)
@@ -308,6 +337,16 @@ public class Player extends MapObject {
 				currentAction = WALKING;
 				animation.setFrames(sprites.get(WALKING));
 				animation.setDelay(100);
+				width = 30;
+			}
+		}
+		else if(down)
+		{
+			if(currentAction != DUCKING)
+			{
+				currentAction = DUCKING;
+				animation.setFrames(sprites.get(DUCKING));
+				animation.setDelay(-1);
 				width = 30;
 			}
 		}

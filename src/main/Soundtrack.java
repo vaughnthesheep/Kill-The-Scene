@@ -9,7 +9,7 @@ import sun.applet.Main;
 public class Soundtrack {
 	
 	private static Clip song;
-	
+	private static boolean playing = false;
 	
 	public Soundtrack()
 	{
@@ -35,9 +35,19 @@ public class Soundtrack {
 		song.loop(-1);
 	}
 	
+	public static synchronized void playOnce()
+	{
+		song.loop(0);
+	}
+	
 	public static synchronized void stop()
 	{
 		song.stop();
+	}
+	
+	public static boolean isPlaying()
+	{
+		return song.isRunning();
 	}
 
 }
