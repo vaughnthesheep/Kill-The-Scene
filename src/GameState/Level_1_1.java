@@ -13,7 +13,7 @@ import main.Soundtrack;
 
 
 
-public class Level1State extends GameState {
+public class Level_1_1 extends GameState {
 	
 	private TileMap tileMap;
 	private Background bg;
@@ -22,7 +22,7 @@ public class Level1State extends GameState {
 	private ArrayList<Enemy> enemies;
 	private ArrayList<Explosion> explosions;
 
-	public Level1State(GameStateManager gsm)
+	public Level_1_1(GameStateManager gsm)
 	{
 		this.gsm = gsm;
 	}

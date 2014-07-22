@@ -11,16 +11,23 @@ public class GameStateManager {
 	private int currentState;
 	private boolean paused = false;
 	private boolean initializing = false;
-	public static final int STARTUP = -1;
+	public static final int STARTUP = -1; // not included in gamestate arraylist
 	public static final int MENUSTATE = 0;
-	public static final int LEVEL1STATE = 1;
+	public static final int DEADSTATE = 1;
+	public static final int GAMEOVERSTATE = 2;
+	public static final int LEVEL_1_1 = 3;
+	public static final int LEVEL_1_2 = 4;
+	public static final int LEVEL_1_3 = 5;
+	
 	
 	public GameStateManager()
 	{
 		currentState = STARTUP;
 		gameStates = new ArrayList<GameState>();
 		gameStates.add(new MenuState(this));
-		gameStates.add(new Level1State(this));
+		gameStates.add(new DeadState(this));
+		gameStates.add(new GameOverState(this));
+		gameStates.add(new Level_1_1(this));
 		setState(MENUSTATE);
 	}
 	
