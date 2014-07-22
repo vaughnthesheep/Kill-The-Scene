@@ -9,7 +9,6 @@ public class GameStateManager {
 
 	private ArrayList<GameState> gameStates;
 	private int currentState;
-	public int previousState;
 	private boolean paused = false;
 	private boolean initializing = false;
 	public static final int STARTUP = -1; // not included in gamestate arraylist
@@ -21,7 +20,8 @@ public class GameStateManager {
 	public static final int LEVEL_1_2 = 5;
 	public static final int LEVEL_1_3 = 6;
 	
-	public int lives;
+	private int lives;
+	private int previousState = LEVEL_1_1;
 	
 	public GameStateManager()
 	{
@@ -52,13 +52,16 @@ public class GameStateManager {
 		initializing = false;
 	}
 	
-	public void resumeState(int state)
+	public void resumePrevious()
 	{
 		initializing = true;
-		currentState = state;
+		currentState = previousState;
 		initializing = false;
 		
 		Soundtrack.play();
+		
+		if(paused)
+			paused = false;
 	}
 	
 	public void update()
@@ -79,15 +82,15 @@ public class GameStateManager {
 		{
 			if(paused)
 			{
-				resumeState(previousState);
+				resumePrevious();
 			}
 			else
 			{
 				previousState = currentState;
 				setState(PAUSESTATE);
+				
+				paused = true;
 			}
-			
-			paused = !paused;
 
 		}
 		
@@ -102,5 +105,15 @@ public class GameStateManager {
 	public boolean isPaused() 
 	{
 		return paused;
+	}
+
+	public void decLives(int i) 
+	{
+		lives -= i;
+	}
+
+	public int getLives() 
+	{
+		return lives;
 	}
 }

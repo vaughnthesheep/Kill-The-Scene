@@ -58,6 +58,7 @@ public class PauseState extends GameState {
 	{
 		if(currentChoice == 0)
 		{
+			gsm.resumePrevious();
 		}
 		if(currentChoice == 1)
 		{
