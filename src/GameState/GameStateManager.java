@@ -19,6 +19,8 @@ public class GameStateManager {
 	public static final int LEVEL_1_2 = 4;
 	public static final int LEVEL_1_3 = 5;
 	
+	public int lives;
+	
 	
 	public GameStateManager()
 	{
@@ -29,11 +31,15 @@ public class GameStateManager {
 		gameStates.add(new GameOverState(this));
 		gameStates.add(new Level_1_1(this));
 		setState(MENUSTATE);
+		
+		// gameplay variables
+		
+		lives = 3;
 	}
 	
 	public void setState(int state)
 	{
-		if(currentState != STARTUP)
+		if(currentState != STARTUP && Soundtrack.isPlaying())
 		{
 			Soundtrack.stop();
 		}

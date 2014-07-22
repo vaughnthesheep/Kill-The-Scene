@@ -1,19 +1,28 @@
 package GameState;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 
-public class GameOverState extends GameState {
+import main.GamePanel;
+import main.Soundtrack;
 
+public class GameOverState extends GameState {
+	
+	private Font font;
 	
 	public GameOverState(GameStateManager gsm)
 	{
 		this.gsm = gsm;
+		
+		font = new Font("Arial", Font.PLAIN, 10);
 	}
 
 	@Override
 	public void init() {
-		// TODO Auto-generated method stub
-		
+		Soundtrack.setSong("Charlsewood.wav"); // change to game over song
+		Soundtrack.playOnce();
 	}
 
 	@Override
@@ -24,7 +33,17 @@ public class GameOverState extends GameState {
 
 	@Override
 	public void draw(Graphics2D g) {
-		// TODO Auto-generated method stub
+		g.setColor(new Color(0,0,0));
+		g.fillRect(0,0,GamePanel.WIDTH,GamePanel.HEIGHT);
+		g.setColor(new Color(252,252,252));
+		
+		g.setFont(font);
+		FontMetrics fm = g.getFontMetrics(font);
+		java.awt.geom.Rectangle2D rect;
+		rect = fm.getStringBounds("GAME OVER", g);
+		int textWidth  = (int)(rect.getWidth());
+		int x = (GamePanel.WIDTH - textWidth) / 2;
+		g.drawString("GAME OVER", x, GamePanel.HEIGHT/2);
 		
 	}
 
