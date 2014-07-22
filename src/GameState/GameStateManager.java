@@ -47,7 +47,6 @@ public class GameStateManager {
 		}
 		
 		initializing = true;
-		previousState = currentState;
 		currentState = state;
 		gameStates.get(currentState).init();
 		initializing = false;
@@ -58,6 +57,8 @@ public class GameStateManager {
 		initializing = true;
 		currentState = state;
 		initializing = false;
+		
+		Soundtrack.play();
 	}
 	
 	public void update()
@@ -74,14 +75,15 @@ public class GameStateManager {
 	
 	public void keyPressed(int k)
 	{
-		if(k == KeyEvent.VK_ESCAPE) 
+		if(k == KeyEvent.VK_ESCAPE && (currentState != STARTUP && currentState != MENUSTATE)) 
 		{
 			if(paused)
 			{
-				resumeState(4);
+				resumeState(previousState);
 			}
 			else
 			{
+				previousState = currentState;
 				setState(PAUSESTATE);
 			}
 			
