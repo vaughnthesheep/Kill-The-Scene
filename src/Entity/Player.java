@@ -49,7 +49,8 @@ public class Player extends MapObject {
 	private static final int BLOCKING = 7;
 	private static final int DYING = 8;
 	
-	
+	private static final int CHEIGHT_DEFAULT = 40;
+	private static final int CHEIGHT_DUCKING = 20;
 	
 	
 	public Player(TileMap tm)
@@ -59,7 +60,7 @@ public class Player extends MapObject {
 		width = 30;
 		height = 50;
 		cwidth = 20;
-		cheight = 40;
+		cheight = CHEIGHT_DEFAULT;
 		
 		moveSpeed = 0.3;
 		maxSpeed = 1.6;
@@ -170,7 +171,7 @@ public class Player extends MapObject {
 			}
 		}
 		
-		// cannot move while attacking (unless in air)
+		// cannot move while attacking or ducking (unless in air)
 		if((currentAction == PUNCHING || currentAction == THROWING || currentAction == DUCKING) && !(jumping || falling))
 		{
 			dx = 0;
@@ -269,6 +270,7 @@ public class Player extends MapObject {
 				animation.setFrames(sprites.get(PUNCHING));
 				animation.setDelay(50);
 				width = 60;
+				cheight = CHEIGHT_DEFAULT;
 			}
 		}
 		else if(throwing)
@@ -279,6 +281,7 @@ public class Player extends MapObject {
 				animation.setFrames(sprites.get(THROWING));
 				animation.setDelay(100);
 				width = 60;
+				cheight = CHEIGHT_DEFAULT;
 			}
 		}
 		else if(dy > 0)
@@ -289,6 +292,7 @@ public class Player extends MapObject {
 				animation.setFrames(sprites.get(FALLING));
 				animation.setDelay(100);
 				width = 30;
+				cheight = CHEIGHT_DEFAULT;
 			}
 		}
 		else if(dy < 0)
@@ -299,6 +303,7 @@ public class Player extends MapObject {
 				animation.setFrames(sprites.get(JUMPING));
 				animation.setDelay(-1);
 				width = 30;
+				cheight = CHEIGHT_DEFAULT;
 			}
 		}
 		else if(left || right)
@@ -309,6 +314,18 @@ public class Player extends MapObject {
 				animation.setFrames(sprites.get(WALKING));
 				animation.setDelay(100);
 				width = 30;
+				cheight = CHEIGHT_DEFAULT;
+			}
+		}
+		else if(down)
+		{
+			if(currentAction != DUCKING)
+			{
+				currentAction = DUCKING;
+				animation.setFrames(sprites.get(DUCKING));
+				animation.setDelay(-1);
+				width = 30;
+				cheight = CHEIGHT_DUCKING;
 			}
 		}
 		else
