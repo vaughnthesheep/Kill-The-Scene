@@ -30,6 +30,10 @@ public class Player extends MapObject {
 	private int punchDamage;
 	private int punchRange;
 	
+	// block
+	private boolean blocking;
+	private int blockAmount;
+	
 	// animations
 	private ArrayList<BufferedImage[]> sprites;
 	
@@ -75,11 +79,15 @@ public class Player extends MapObject {
 		
 		health = maxHealth = 25;
 		strength = maxStrength = 25;
+		
 		projectileCost = 5;
 		projectileDamage = 5;
 		projectiles = new ArrayList<Projectile>();
+		
 		punchDamage = 5;
 		punchRange = 40;
+		
+		blockAmount = 5;
 		
 		// load sprites
 		try{
@@ -87,7 +95,7 @@ public class Player extends MapObject {
 					getClass().getResourceAsStream(
 							"/Sprites/Player/spritesheet.gif"));
 			sprites = new ArrayList<BufferedImage[]>();
-			for(int i = 0; i < 7; i ++) //!!!!!!!!! 7 = number of different animations, change for other players.
+			for(int i = 0; i < 9; i ++)
 			{
 				BufferedImage[] bi = new BufferedImage[numFrames[i]];
 				for(int j = 0; j < numFrames[i]; j++)
@@ -123,12 +131,22 @@ public class Player extends MapObject {
 	
 	public void setThrowing()
 	{
+		if(currentAction == PUNCHING || currentAction == BLOCKING)
+			return;
 		throwing = true;
 	}
 	
 	public void setPunching()
 	{
+		if(currentAction == THROWING || currentAction == BLOCKING)
+			return;
 		punching = true;
+	}
+	public void setBlocking(boolean block)
+	{
+		if(currentAction == PUNCHING || currentAction == THROWING)
+			return;
+		blocking = block;
 	}
 	
 	
@@ -172,7 +190,7 @@ public class Player extends MapObject {
 		}
 		
 		// cannot move while attacking or ducking (unless in air)
-		if((currentAction == PUNCHING || currentAction == THROWING || currentAction == DUCKING) && !(jumping || falling))
+		if((currentAction == PUNCHING || currentAction == THROWING || currentAction == DUCKING || currentAction == BLOCKING) && !(jumping || falling))
 		{
 			dx = 0;
 		}
@@ -270,7 +288,6 @@ public class Player extends MapObject {
 				animation.setFrames(sprites.get(PUNCHING));
 				animation.setDelay(50);
 				width = 60;
-				cheight = CHEIGHT_DEFAULT;
 			}
 		}
 		else if(throwing)
@@ -281,7 +298,16 @@ public class Player extends MapObject {
 				animation.setFrames(sprites.get(THROWING));
 				animation.setDelay(100);
 				width = 60;
-				cheight = CHEIGHT_DEFAULT;
+			}
+		}
+		else if(blocking)
+		{
+			if(currentAction != BLOCKING)
+			{
+				currentAction = BLOCKING;
+				animation.setFrames(sprites.get(BLOCKING));
+				animation.setDelay(-1);
+				width = 60;
 			}
 		}
 		else if(dy > 0)
@@ -292,7 +318,6 @@ public class Player extends MapObject {
 				animation.setFrames(sprites.get(FALLING));
 				animation.setDelay(100);
 				width = 30;
-				cheight = CHEIGHT_DEFAULT;
 			}
 		}
 		else if(dy < 0)
@@ -303,7 +328,6 @@ public class Player extends MapObject {
 				animation.setFrames(sprites.get(JUMPING));
 				animation.setDelay(-1);
 				width = 30;
-				cheight = CHEIGHT_DEFAULT;
 			}
 		}
 		else if(left || right)
@@ -314,7 +338,6 @@ public class Player extends MapObject {
 				animation.setFrames(sprites.get(WALKING));
 				animation.setDelay(100);
 				width = 30;
-				cheight = CHEIGHT_DEFAULT;
 			}
 		}
 		else if(down)
@@ -325,7 +348,6 @@ public class Player extends MapObject {
 				animation.setFrames(sprites.get(DUCKING));
 				animation.setDelay(-1);
 				width = 30;
-				//cheight = CHEIGHT_DUCKING;
 			}
 		}
 		else
@@ -336,7 +358,6 @@ public class Player extends MapObject {
 				animation.setFrames(sprites.get(IDLE));
 				animation.setDelay(400);
 				width = 30;
-				//cheight = CHEIGHT_DEFAULT;
 			}
 		}
 		
