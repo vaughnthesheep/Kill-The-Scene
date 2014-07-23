@@ -67,9 +67,9 @@ public class Brawler extends Enemy {
 		cwidth = 20;
 		cheight = 40;
 		
-		moveSpeed = 0.4;
+		moveSpeed = 0.2;
 		airMoveSpeed = 0.2;
-		maxSpeed = 1.6;
+		maxSpeed = 1;
 		stopSpeed = 0.4;
 		fallSpeed = 0.20;
 		maxFallSpeed = 4.0;
@@ -250,17 +250,6 @@ public class Brawler extends Enemy {
 			}
 		}
 		
-		
-		// check done flinching
-		if(flinching)
-		{
-			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
-			if(elapsed > maxFlinchTime)
-			{
-				flinching = false;
-			}
-		}
-		
 		// set animation
 		if(dying)
 		{
@@ -385,17 +374,11 @@ public class Brawler extends Enemy {
 	public void hit(int damage, int force, boolean fromRight)
 	{
 		if(dying) return;
-		if(flinching) return;
 		health -= damage;
 		if(health < 0) health = 0;
 		if(health == 0)
 		{
 			dying();
-		}
-		else
-		{
-			flinching = true;
-			flinchTimer = System.nanoTime();
 		}
 		dy = -force;
 		if(fromRight)
@@ -423,17 +406,6 @@ public class Brawler extends Enemy {
 	{
 		// IMPORTANT FIRST METHOD
 		setMapPosition();
-		
-		// Blinks (does not draw half the time) if flinching
-		if(flinching)
-		{
-			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
-			if(elapsed / 100 % 2 == 0)
-			{
-				return;
-			}
-		}
-		
 		super.draw(g);
 	}
 	

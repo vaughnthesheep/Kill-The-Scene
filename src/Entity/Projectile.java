@@ -17,6 +17,7 @@ public class Projectile extends MapObject{
 		super(tm);
 		
 		facingRight = right;
+		hit = false;
 		
 		moveSpeed = 3.8;
 		if(right) dx = moveSpeed;
@@ -70,6 +71,11 @@ public class Projectile extends MapObject{
 		animation.setFrames(hitSprites);
 		animation.setDelay(70);
 		dx = 0;
+	}
+	
+	public boolean isHit()
+	{
+		return hit;
 	}
 	
 	public boolean shouldRemove(){ return remove; }

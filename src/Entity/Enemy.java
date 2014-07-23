@@ -9,22 +9,16 @@ public abstract class Enemy extends MapObject {
 	protected boolean dying;
 	protected boolean dead;
 	protected int damage;
-	
-	protected boolean flinching;
-	protected long maxFlinchTime;
-	protected long flinchTimer;
 
 	public Enemy(TileMap tm)
 	{
 		super(tm);
 		dead = false;
 		dying = false;
-		flinching = false;
 	}
 	
 	public boolean isDead(){ return dead; }
 	public boolean isDying(){ return dying; }
-	public boolean isFlinching(){ return flinching; }
 	
 	public int getDamage(){ return damage; }
 	
