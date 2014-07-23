@@ -431,7 +431,7 @@ public class Player extends MapObject {
 						e.gety() > y - height/2 &&
 						e.gety() < y + height/2
 					){
-						e.hit(punchDamage);
+						e.hit(punchDamage, false);
 					}
 				}
 				else
@@ -442,7 +442,7 @@ public class Player extends MapObject {
 						e.gety() > y - height/2 &&
 						e.gety() < y + height/2
 					){
-						e.hit(punchDamage);
+						e.hit(punchDamage, true);
 					}
 				}
 			}
@@ -452,7 +452,7 @@ public class Player extends MapObject {
 			{
 				if(projectiles.get(j).intersects(e))
 				{
-					e.hit(projectileDamage);
+					e.hit(projectileDamage, !projectiles.get(j).facingRight);
 					projectiles.get(j).setHit();
 				}
 			}
@@ -461,7 +461,7 @@ public class Player extends MapObject {
 		
 	}
 	
-	public void hit(int damage)
+	public void hit(int damage, boolean fromRight)
 	{
 		if(dying) return;
 		if(flinching) return;

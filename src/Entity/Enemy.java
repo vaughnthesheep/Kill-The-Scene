@@ -16,13 +16,14 @@ public abstract class Enemy extends MapObject {
 	public Enemy(TileMap tm)
 	{
 		super(tm);
+		dead = false;
 	}
 	
 	public boolean isDead(){ return dead; }
 	
 	public int getDamage(){ return damage; }
 	
-	public void hit(int damage)
+	public void hit(int damage, boolean fromRight)
 	{
 		if(dead || flinching) return;
 		health -= damage;
