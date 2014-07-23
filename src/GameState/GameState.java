@@ -1,6 +1,14 @@
 package GameState;
 
 public abstract class GameState {
+	
+	// MOVE THIS SECTION TO LEVELSTATE SUPERCLASS ONCE CREATED,
+	// USELESS FOR NON-LEVEL STATES
+	protected int fallLimit;
+	public int getFallLimit()
+	{
+		return fallLimit;
+	}
 
 	protected GameStateManager gsm;
 	public abstract void init();

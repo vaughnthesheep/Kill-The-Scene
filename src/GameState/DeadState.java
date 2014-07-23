@@ -13,7 +13,7 @@ public class DeadState extends GameState {
 	
 	private Font font;
 	private long startTime;
-	private final long WAIT_TIME = 3000; // milliseconds
+	private final long WAIT_TIME = 2000; // milliseconds
 	private BufferedImage sprite;
 	private BufferedImage spritesheet;
 	
@@ -31,12 +31,12 @@ public class DeadState extends GameState {
 			e.printStackTrace();
 		}
 	}
-
-	@Override
+	
+	
 	public void init() {
-		
 		gsm.decLives(1);
-		gsm.setState(gsm.GAMEOVERSTATE);
+		if(gsm.lives == 0)
+			gsm.setState(gsm.GAMEOVERSTATE);
 		startTime = System.nanoTime();
 	}
 
@@ -45,7 +45,7 @@ public class DeadState extends GameState {
 		
 		if((System.nanoTime() - startTime) / 1000000 >= WAIT_TIME)
 		{
-			gsm.resumePrevious();
+			gsm.setState(gsm.getPrevious());
 		}
 		
 	}
@@ -53,10 +53,12 @@ public class DeadState extends GameState {
 	@Override
 	public void draw(Graphics2D g) {
 		
-		g.drawImage(sprite,GamePanel.WIDTH-50, GamePanel.HEIGHT-25, null);
+		g.setColor(Color.BLACK);
+		g.fillRect(0,0,GamePanel.WIDTH,GamePanel.HEIGHT);
+		g.drawImage(sprite,GamePanel.WIDTH/2-25, GamePanel.HEIGHT/2-25, null);
 		g.setColor(new Color(252,252,252));
 		g.setFont(font);
-		g.drawString(" x " + gsm.getLives(), GamePanel.WIDTH, GamePanel.HEIGHT);
+		g.drawString(" x " + gsm.lives, GamePanel.WIDTH/2, GamePanel.HEIGHT/2);
 	}
 
 	@Override

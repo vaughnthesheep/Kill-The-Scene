@@ -20,7 +20,8 @@ public class GameStateManager {
 	public static final int LEVEL_1_2 = 5;
 	public static final int LEVEL_1_3 = 6;
 	
-	private int lives;
+	public final int START_LIVES = 1;
+	public int lives;
 	private int previousState = LEVEL_1_1;
 	
 	public GameStateManager()
@@ -36,7 +37,7 @@ public class GameStateManager {
 		
 		// gameplay variables
 		
-		lives = 3;
+		lives = START_LIVES;
 	}
 	
 	public void setState(int state)
@@ -50,6 +51,10 @@ public class GameStateManager {
 		currentState = state;
 		gameStates.get(currentState).init();
 		initializing = false;
+	}
+	public GameState getState()
+	{
+		return gameStates.get(currentState);
 	}
 	
 	public void resumePrevious()
@@ -78,7 +83,10 @@ public class GameStateManager {
 	
 	public void keyPressed(int k)
 	{
-		if(k == KeyEvent.VK_ESCAPE && (currentState != STARTUP && currentState != MENUSTATE)) 
+		if(k == KeyEvent.VK_ESCAPE && (currentState != STARTUP &&
+										currentState != MENUSTATE &&
+										currentState != DEADSTATE &&
+										currentState != GAMEOVERSTATE)) 
 		{
 			if(paused)
 			{
@@ -88,7 +96,6 @@ public class GameStateManager {
 			{
 				previousState = currentState;
 				setState(PAUSESTATE);
-				
 				paused = true;
 			}
 
@@ -111,9 +118,14 @@ public class GameStateManager {
 	{
 		lives -= i;
 	}
-
-	public int getLives() 
+	
+	public int getPrevious()
 	{
-		return lives;
+		return previousState;
+	}
+	
+	public void reset()
+	{
+		gameStates.set(MENUSTATE, new MenuState(this));
 	}
 }

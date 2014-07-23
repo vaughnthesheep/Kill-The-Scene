@@ -1,20 +1,26 @@
 package Entity;
 
+import GameState.GameStateManager;
 import TileMap.*;
 import javax.imageio.ImageIO;
+
+import main.Soundtrack;
+
 import java.awt.*;
 import java.awt.image.BufferedImage; 
 import java.util.ArrayList;
 
 public class Player extends MapObject {
+	
+	GameStateManager gsm;
 
 	// player variables
-	
 	private int health;
 	private int maxHealth;
 	private int strength;
 	private int maxStrength;
-	private boolean dead;
+	private boolean dying;
+	private long dyingTimer;
 	private boolean flinching;
 	private long flinchTimer;
 	private long maxFlinchTime;
@@ -60,9 +66,10 @@ public class Player extends MapObject {
 	private static final int CHEIGHT_DUCKING = 20;
 	
 	
-	public Player(TileMap tm)
+	public Player(TileMap tm, GameStateManager gsm)
 	{
 		super(tm);
+		this.gsm = gsm;
 		
 		width = 30;
 		height = 50;
@@ -200,7 +207,7 @@ public class Player extends MapObject {
 		}
 		
 		// cannot move while attacking or ducking (unless in air)
-		if((currentAction == PUNCHING || currentAction == THROWING || currentAction == DUCKING || currentAction == BLOCKING) && !(jumping || falling))
+		if((currentAction == PUNCHING || currentAction == THROWING || currentAction == DUCKING || currentAction == BLOCKING || currentAction == DYING) && !(jumping || falling))
 		{
 			dx = 0;
 		}
@@ -230,6 +237,7 @@ public class Player extends MapObject {
 				dy = maxFallSpeed;
 			}
 		}
+		
 	}
 	
 	public void update()
@@ -238,6 +246,16 @@ public class Player extends MapObject {
 		getNextPosition();
 		checkTileMapCollision();
 		setPosition(xtemp, ytemp);
+		
+		// check if fell off cliff
+		if(ytemp > gsm.getState().getFallLimit() && !dying)
+		{
+			dying();
+			dx = 0;
+			dy = 0;
+			left = false;
+			right = false;
+		}
 		
 		// check attack has stopped
 		if(currentAction == PUNCHING)
@@ -290,7 +308,21 @@ public class Player extends MapObject {
 		}
 		
 		// set animation
-		if(punching)
+		if(dying)
+		{
+			if(currentAction != DYING)
+			{
+				currentAction = DYING;
+				
+				// set animation frames
+			}
+			// set to DeadState
+			if((System.nanoTime() - dyingTimer) / 1000000 > 3500)
+			{
+				gsm.setState(gsm.DEADSTATE);
+			}
+		}
+		else if(punching)
 		{
 			if(currentAction != PUNCHING)
 			{
@@ -431,12 +463,33 @@ public class Player extends MapObject {
 	
 	public void hit(int damage)
 	{
+		if(dying) return;
 		if(flinching) return;
 		health -= damage;
 		if(health < 0) health = 0;
-		if(health == 0) dead = true;
-		flinching = true;
-		flinchTimer = System.nanoTime();
+		if(health == 0)
+		{
+			dying();
+		}
+		else
+		{
+			flinching = true;
+			flinchTimer = System.nanoTime();
+		}
+	}
+	
+	public void dying()
+	{
+		dying = true;
+		dyingTimer = System.nanoTime();
+		Soundtrack.stop();
+		Soundtrack.setSong("Dead.wav");
+		Soundtrack.playOnce();
+	}
+	
+	public boolean isDying()
+	{
+		return dying;
 	}
 	
 	public void draw(Graphics2D g)
@@ -445,7 +498,6 @@ public class Player extends MapObject {
 		setMapPosition();
 		
 		// Draw projectiles
-		
 		for(int i = 0; i < projectiles.size(); i++)
 		{
 			projectiles.get(i).draw(g);

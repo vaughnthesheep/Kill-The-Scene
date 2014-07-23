@@ -11,23 +11,30 @@ import main.Soundtrack;
 public class GameOverState extends GameState {
 	
 	private Font font;
+	private long startTime;
+	private final long WAIT_TIME = 5000;
 	
 	public GameOverState(GameStateManager gsm)
 	{
 		this.gsm = gsm;
-		
-		font = new Font("Arial", Font.PLAIN, 10);
 	}
-
+	
 	@Override
 	public void init() {
-		Soundtrack.setSong("Charlsewood.wav"); // change to game over song
+		font = new Font("Arial", Font.PLAIN, 10);
+		startTime = System.nanoTime();
+		Soundtrack.setSong("Game Over.wav"); // change to game over song
 		Soundtrack.playOnce();
 	}
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
+		if((System.nanoTime() - startTime) / 1000000 >= WAIT_TIME)
+		{
+			gsm.lives = gsm.START_LIVES;
+			gsm.reset();
+			gsm.setState(gsm.MENUSTATE);
+		}
 		
 	}
 

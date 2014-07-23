@@ -28,13 +28,15 @@ public class PauseState extends GameState {
 	
 	public void update()
 	{
-
+		
 	}
 	
 	public void draw(Graphics2D g)
 	{
 		// draw menu options
 		g.setFont(font);
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
 		FontMetrics fm   = g.getFontMetrics(font);
 		java.awt.geom.Rectangle2D rect;
 		for(int i = 0; i < options.length; i++)
@@ -71,7 +73,7 @@ public class PauseState extends GameState {
 	
 	public void start()
 	{
-
+		
 	}
 	
 	public void keyPressed(int k)
@@ -95,7 +97,7 @@ public class PauseState extends GameState {
 
 			currentChoice++;
 			if(currentChoice == options.length)
-				{
+			{
 				currentChoice = 0;
 			}
 		}
@@ -109,7 +111,7 @@ public class PauseState extends GameState {
 	@Override
 	public void init() 
 	{
-		
+		currentChoice = 0;
 	}
 	
 }

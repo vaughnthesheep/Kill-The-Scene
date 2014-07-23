@@ -21,6 +21,8 @@ public class Level_1_1 extends GameState {
 	private HUD hud;
 	private ArrayList<Enemy> enemies;
 	private ArrayList<Explosion> explosions;
+	
+	// y-level in pixels at which player dies when falling (off cliff, down hole)
 
 	public Level_1_1(GameStateManager gsm)
 	{
@@ -34,9 +36,12 @@ public class Level_1_1 extends GameState {
 		tileMap.loadMap("/Maps/level1-1.map");
 		tileMap.setPosition(0, 0);
 		
+		// y-level in pixels at which player dies when falling (off cliff, down hole)
+		fallLimit = 350;
+		
 		bg = new Background("/Backgrounds/grassbg1.gif", 0.1);
 		
-		player = new Player(tileMap);
+		player = new Player(tileMap, gsm);
 		player.setPosition(100,100);
 		hud = new HUD(player);
 		
@@ -142,14 +147,18 @@ public class Level_1_1 extends GameState {
 	
 	public void keyPressed(int k)
 	{
-		if(k == KeyEvent.VK_LEFT) player.setLeft(true);
-		if(k == KeyEvent.VK_RIGHT) player.setRight(true);
-		if(k == KeyEvent.VK_UP) player.setUp(true);
-		if(k == KeyEvent.VK_DOWN) player.setDown(true);
-		if(k == KeyEvent.VK_W) player.setJumping(true);
-		if(k == KeyEvent.VK_R) player.setPunching();
-		if(k == KeyEvent.VK_E) player.setBlocking(true);
-		if(k == KeyEvent.VK_F) player.setThrowing();
+		// controls do nothing if player is dying
+		if(!player.isDying())
+		{
+			if(k == KeyEvent.VK_LEFT) player.setLeft(true);
+			if(k == KeyEvent.VK_RIGHT) player.setRight(true);
+			if(k == KeyEvent.VK_UP) player.setUp(true);
+			if(k == KeyEvent.VK_DOWN) player.setDown(true);
+			if(k == KeyEvent.VK_W) player.setJumping(true);
+			if(k == KeyEvent.VK_R) player.setPunching();
+			if(k == KeyEvent.VK_E) player.setBlocking(true);
+			if(k == KeyEvent.VK_F) player.setThrowing();
+		}
 	}
 	public void keyReleased(int k)
 	{
