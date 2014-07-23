@@ -6,6 +6,8 @@ import Entity.Player;
 import GameState.GameStateManager;
 import TileMap.*;
 import javax.imageio.ImageIO;
+
+import main.GamePanel;
 import main.Soundtrack;
 import java.awt.*;
 import java.awt.image.BufferedImage; 
@@ -14,13 +16,12 @@ import java.util.ArrayList;
 public class Brawler extends Enemy {
 	
 	GameStateManager gsm;
+	Player player;
 
 	// player variables
 	private int health;
 	private int maxHealth;
-	private boolean dying;
 	private long dyingTimer;	// used twice, once for each frame
-	private boolean flinching;
 	private long flinchTimer;
 	private long maxFlinchTime;
 	private double airMoveSpeed;
@@ -52,11 +53,12 @@ public class Brawler extends Enemy {
 	private final long DYING_TIME = 400;
 	
 	
-	public Brawler(TileMap tm, GameStateManager gsm, String spriteType, boolean facingRight)
+	public Brawler(TileMap tm, GameStateManager gsm, Player player, String spriteType, boolean facingRight)
 	{
 		super(tm);
 		this.gsm = gsm;
 		this.facingRight = facingRight;
+		this.player = player;
 		
 		width = 30;
 		height = 50;
@@ -76,7 +78,7 @@ public class Brawler extends Enemy {
 		health = maxHealth = 10;
 		
 		punchDamage = 5;
-		punchRange = 20;
+		punchRange = 30;
 		punchReload = 1000;
 		
 		
@@ -135,7 +137,7 @@ public class Brawler extends Enemy {
 	
 	private void getNextPosition()
 	{
-		// Call think() method to calculate A.I. (at bottom of page)
+		think();
 		
 		// movement
 		if(left)
@@ -429,7 +431,46 @@ public class Brawler extends Enemy {
 	
 	public void think()
 	{
-		// think where to go, what to do
+		if(currentAction == PUNCHING)
+		{
+			return;
+		}
+		
+		int distance = (int)x - (int)player.getx();
+		int abs = Math.abs(distance);
+		if(abs < GamePanel.WIDTH/2)// if in sight
+		{	
+			if(abs > 30)
+			{
+				if(distance < 0)
+				{
+					right = true;
+					left = false;
+				}
+				else
+				{
+					left = true;
+					right = false;
+				}
+			}
+			else
+			{
+				if(distance < 0 && !facingRight)
+				{
+					right = true;
+					left = false;
+				}
+				else if(distance > 0 && facingRight)
+				{
+					left = true;
+					right = false;
+				}
+				else
+				{
+					setPunching();
+				}
+			}
+		}
 	}
 	
 }

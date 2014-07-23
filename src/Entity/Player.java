@@ -450,7 +450,7 @@ public class Player extends MapObject {
 			// projectiles
 			for(int j = 0; j < projectiles.size(); j++)
 			{
-				if(projectiles.get(j).intersects(e))
+				if(projectiles.get(j).intersects(e) && !e.isFlinching() && !e.isDying() && !e.isDead())
 				{
 					e.hit(projectileDamage, !projectiles.get(j).facingRight);
 					projectiles.get(j).setHit();
