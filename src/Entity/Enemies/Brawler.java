@@ -6,6 +6,9 @@ import Entity.Player;
 import GameState.GameStateManager;
 import TileMap.*;
 import javax.imageio.ImageIO;
+
+import main.GamePanel;
+
 import java.awt.*;
 import java.awt.image.BufferedImage; 
 import java.util.ArrayList;
@@ -28,6 +31,7 @@ public class Brawler extends Enemy {
 	private boolean punching;
 	private int punchDamage;
 	private int punchRange;
+	private int punchForce;
 	private long punchReload;
 	private long lastPunch;
 	
@@ -77,6 +81,7 @@ public class Brawler extends Enemy {
 		
 		punchDamage = 5;
 		punchRange = 30;
+		punchForce = 3;
 		punchReload = 1000;
 		
 		
@@ -96,6 +101,10 @@ public class Brawler extends Enemy {
 					if(i != PUNCHING && i != DYING1 && i!= DYING2)
 					{// sprites for scratch are 60 px wide, not 30
 						bi[j] = spritesheet.getSubimage(j*width, i*height, width, height);
+					}
+					else if(i == PUNCHING)
+					{
+						bi[j] = spritesheet.getSubimage(j*width*2, i*height, width*2, height);
 					}
 					else if(i == DYING1)
 					{
@@ -130,6 +139,7 @@ public class Brawler extends Enemy {
 		if((System.nanoTime() - lastPunch) / 1000000 < punchReload)
 			return;
 		punching = true;
+		lastPunch = System.nanoTime();
 	}
 	
 	
@@ -354,7 +364,7 @@ public class Brawler extends Enemy {
 						player.gety() > y - height/2 &&
 						player.gety() < y + height/2
 					){
-						player.hit(punchDamage, false);
+						player.hit(punchDamage, punchForce, false);
 					}
 				}
 				else
@@ -365,7 +375,7 @@ public class Brawler extends Enemy {
 						player.gety() > y - height/2 &&
 						player.gety() < y + height/2
 					){
-						player.hit(punchDamage, true);
+						player.hit(punchDamage, punchForce, true);
 					}
 				}
 			}
@@ -435,10 +445,6 @@ public class Brawler extends Enemy {
 		}
 		else
 		{
-			setPunching();
-		}
-		/*else
-		{
 		
 			int distance = (int)x - (int)player.getx();
 			int abs = Math.abs(distance);
@@ -477,7 +483,7 @@ public class Brawler extends Enemy {
 					}
 				}
 			}
-		}*/
+		}
 	}
 	
 }

@@ -29,6 +29,7 @@ public abstract class Enemy extends MapObject {
 	public int getDamage(){ return damage; }
 	
 	public abstract void hit(int damage, int force, boolean fromRight);
+	public abstract void checkAttack(Player player);
 	
 	public void update()
 	{

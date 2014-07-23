@@ -465,7 +465,7 @@ public class Player extends MapObject {
 		
 	}
 	
-	public void hit(int damage, boolean fromRight)
+	public void hit(int damage, int force, boolean fromRight)
 	{
 		if(dying) return;
 		if(flinching) return;
@@ -479,6 +479,15 @@ public class Player extends MapObject {
 		{
 			flinching = true;
 			flinchTimer = System.nanoTime();
+		}
+		dy = -force;
+		if(fromRight)
+		{
+			dx = -force;
+		}
+		else
+		{
+			dx = force;
 		}
 	}
 	

@@ -97,6 +97,10 @@ public class Level_1_1 extends GameState {
 				i--;
 				explosions.add(new Explosion(e.getx(), e.gety()));
 			}
+			else
+			{
+				e.checkAttack(player);
+			}
 		}
 		
 		// update explosions
