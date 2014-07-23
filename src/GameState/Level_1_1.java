@@ -55,9 +55,9 @@ public class Level_1_1 extends GameState {
 	private void populateEnemies()
 	{
 		enemies = new ArrayList<Enemy>();
-		Slugger s;
+		Brawler b;
 		Point[] points = new Point[]{
-			new Point(200, 100),
+			new Point(250, 100),
 			new Point(860, 200),
 			new Point(1525, 200),
 			new Point(1680, 200),
@@ -66,15 +66,11 @@ public class Level_1_1 extends GameState {
 		
 		for(int i = 0; i < points.length; i++)
 		{
-			s = new Slugger(tileMap);
-			s.setPosition(points[i].x, points[i].y);
-			enemies.add(s);
+			b = new Brawler(tileMap, gsm, player, "testbrawler.gif", false);
+			b.setPosition(points[i].x, points[i].y);
+			enemies.add(b);
 		}
-		// brawler test
 		
-		Brawler b = new Brawler(tileMap, gsm, player, "testbrawler.gif", false);
-		b.setPosition(250,150);
-		enemies.add(b);
 	}
 	
 	public void update()
