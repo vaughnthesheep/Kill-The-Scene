@@ -168,5 +168,15 @@ public class Level_1_1 extends GameState {
 		if(k == KeyEvent.VK_DOWN) player.setDown(false);
 		if(k == KeyEvent.VK_W) player.setJumping(false);
 		if(k == KeyEvent.VK_E) player.setBlocking(false);
+		
+		if(k == -1)
+		{
+			player.setLeft(false);
+			player.setRight(false);
+			player.setUp(false);
+			player.setDown(false);
+			player.setJumping(false);
+			player.setBlocking(false);
+		}
 	}
 }

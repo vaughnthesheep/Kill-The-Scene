@@ -94,6 +94,7 @@ public class GameStateManager {
 			}
 			else
 			{
+				gameStates.get(currentState).keyReleased(-1);
 				previousState = currentState;
 				setState(PAUSESTATE);
 				paused = true;
