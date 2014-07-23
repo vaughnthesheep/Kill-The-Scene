@@ -374,7 +374,7 @@ public class Brawler extends Enemy {
 			
 	}
 	
-	public void hit(int damage, boolean fromRight)
+	public void hit(int damage, int force, boolean fromRight)
 	{
 		if(dying) return;
 		if(flinching) return;
@@ -389,14 +389,14 @@ public class Brawler extends Enemy {
 			flinching = true;
 			flinchTimer = System.nanoTime();
 		}
-		dy -= 2;
+		dy = -force;
 		if(fromRight)
 		{
-			dx -= 2;
+			dx = -force;
 		}
 		else
 		{
-			dx += 2;
+			dx = force;
 		}
 	}
 	

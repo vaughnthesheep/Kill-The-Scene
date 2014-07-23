@@ -32,12 +32,14 @@ public class Player extends MapObject {
 	private boolean throwing;
 	private int projectileCost;
 	private int projectileDamage;
+	private int projectileForce;
 	private ArrayList<Projectile> projectiles;
 	
 	// scratch
 	private boolean punching;
 	private int punchDamage;
 	private int punchRange;
+	private int punchForce;
 	
 	// block
 	private boolean blocking;
@@ -93,10 +95,12 @@ public class Player extends MapObject {
 		
 		projectileCost = 5;
 		projectileDamage = 5;
+		projectileForce = 2;
 		projectiles = new ArrayList<Projectile>();
 		
 		punchDamage = 5;
 		punchRange = 40;
+		punchForce = 2;
 		
 		blockAmount = 5;
 		
@@ -431,7 +435,7 @@ public class Player extends MapObject {
 						e.gety() > y - height/2 &&
 						e.gety() < y + height/2
 					){
-						e.hit(punchDamage, false);
+						e.hit(punchDamage, punchForce, false);
 					}
 				}
 				else
@@ -442,7 +446,7 @@ public class Player extends MapObject {
 						e.gety() > y - height/2 &&
 						e.gety() < y + height/2
 					){
-						e.hit(punchDamage, true);
+						e.hit(punchDamage, punchForce, true);
 					}
 				}
 			}
@@ -452,7 +456,7 @@ public class Player extends MapObject {
 			{
 				if(projectiles.get(j).intersects(e) && !e.isFlinching() && !e.isDying() && !e.isDead())
 				{
-					e.hit(projectileDamage, !projectiles.get(j).facingRight);
+					e.hit(projectileDamage, projectileForce, !projectiles.get(j).facingRight);
 					projectiles.get(j).setHit();
 				}
 			}

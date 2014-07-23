@@ -2,7 +2,6 @@ package GameState;
 
 import Entity.*;
 import Entity.Enemies.Brawler;
-import Entity.Enemies.Slugger;
 import TileMap.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
