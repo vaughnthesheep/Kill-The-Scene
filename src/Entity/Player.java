@@ -19,6 +19,9 @@ public class Player extends MapObject {
 	private long flinchTimer;
 	private long maxFlinchTime;
 	
+	// how fast player can be moved left and right in the air
+	private double airMoveSpeed;
+	
 	// fireball
 	private boolean throwing;
 	private int projectileCost;
@@ -66,12 +69,13 @@ public class Player extends MapObject {
 		cwidth = 20;
 		cheight = CHEIGHT_DEFAULT;
 		
-		moveSpeed = 0.3;
+		moveSpeed = 0.4;
+		airMoveSpeed = 0.2;
 		maxSpeed = 1.6;
 		stopSpeed = 0.4;
-		fallSpeed = 0.15;
+		fallSpeed = 0.20;
 		maxFallSpeed = 4.0;
-		jumpStart = -4.8;
+		jumpStart = -5.5;
 		stopJumpSpeed = 0.3;
 		maxFlinchTime = 1000;
 		
@@ -155,7 +159,10 @@ public class Player extends MapObject {
 		// movement
 		if(left)
 		{
-			dx -= moveSpeed;
+			if(falling)
+				dx -= airMoveSpeed;
+			else
+				dx -= moveSpeed;
 			if(dx < -maxSpeed)
 			{
 				dx = -maxSpeed;
@@ -163,7 +170,10 @@ public class Player extends MapObject {
 		}
 		else if(right)
 		{
-			dx += moveSpeed;
+			if(falling)
+				dx += airMoveSpeed;
+			else
+				dx += moveSpeed;
 			if(dx > maxSpeed)
 			{
 				dx = maxSpeed;
@@ -171,7 +181,7 @@ public class Player extends MapObject {
 		}
 		else
 		{
-			if(dx > 0)
+			if(dx > 0 && !falling)
 			{
 				dx -= stopSpeed;
 				if(dx < 0)
@@ -179,7 +189,7 @@ public class Player extends MapObject {
 					dx = 0;
 				}
 			}
-			else if(dx < 0)
+			else if(dx < 0 && !falling)
 			{
 				dx += stopSpeed;
 				if(dx > 0)
