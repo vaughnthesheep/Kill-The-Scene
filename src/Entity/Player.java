@@ -50,7 +50,7 @@ public class Player extends MapObject {
 	
 	// num frames per action (check player sprites)
 	private final int[] numFrames = {
-		2, 4, 1, 3, 1, 3, 3, 1, 2
+		2, 4, 1, 3, 1, 3, 3, 1, 1, 1
 	};
 	
 	// animation actions
@@ -62,10 +62,10 @@ public class Player extends MapObject {
 	private static final int THROWING = 5;
 	private static final int PUNCHING = 6;
 	private static final int BLOCKING = 7;
-	private static final int DYING = 8;
+	private static final int DYING1 = 8;
+	private static final int DYING2 = 9;
 	
-	private static final int CHEIGHT_DEFAULT = 40;
-	private static final int CHEIGHT_DUCKING = 20;
+	private final long DYING_TIME = 1600;
 	
 	
 	public Player(TileMap tm, GameStateManager gsm)
@@ -76,7 +76,7 @@ public class Player extends MapObject {
 		width = 30;
 		height = 50;
 		cwidth = 20;
-		cheight = CHEIGHT_DEFAULT;
+		cheight = 40;
 		
 		moveSpeed = 0.4;
 		airMoveSpeed = 0.2;
@@ -110,14 +110,18 @@ public class Player extends MapObject {
 					getClass().getResourceAsStream(
 							"/Sprites/Player/spritesheet.gif"));
 			sprites = new ArrayList<BufferedImage[]>();
-			for(int i = 0; i < 9; i ++)
+			for(int i = 0; i < 10; i ++)
 			{
 				BufferedImage[] bi = new BufferedImage[numFrames[i]];
 				for(int j = 0; j < numFrames[i]; j++)
 				{
-					if(i != THROWING && i != PUNCHING && i != BLOCKING && i != DYING)
+					if(i != THROWING && i != PUNCHING && i != BLOCKING && i != DYING1 && i != DYING2)
 					{// sprites for scratch are 60 px wide, not 30
 						bi[j] = spritesheet.getSubimage(j*width, i*height, width, height);
+					}
+					else if(i == DYING2)
+					{
+						bi[j] = spritesheet.getSubimage(j*width*2 + width*2, i*height - height, width*2, height);
 					}
 					else
 					{
@@ -211,7 +215,13 @@ public class Player extends MapObject {
 		}
 		
 		// cannot move while attacking or ducking (unless in air)
-		if((currentAction == PUNCHING || currentAction == THROWING || currentAction == DUCKING || currentAction == BLOCKING || currentAction == DYING) && !(jumping || falling))
+		if((currentAction == PUNCHING || 
+				currentAction == THROWING || 
+				currentAction == DUCKING || 
+				currentAction == BLOCKING || 
+				currentAction == DYING1 || 
+				currentAction == DYING2) && 
+				!(jumping || falling))
 		{
 			dx = 0;
 		}
@@ -314,11 +324,21 @@ public class Player extends MapObject {
 		// set animation
 		if(dying)
 		{
-			if(currentAction != DYING)
+			if(currentAction != DYING1 && currentAction != DYING2)
 			{
-				currentAction = DYING;
-				
-				// set animation frames
+				currentAction = DYING1;
+				animation.setFrames(sprites.get(DYING1));
+				animation.setDelay(-1);
+				width = 60;
+			}
+			else if(currentAction == DYING1)
+			{
+				if((System.nanoTime() - dyingTimer) / 1000000 > DYING_TIME)
+				{
+					currentAction = DYING2;
+					animation.setFrames(sprites.get(DYING2));
+					animation.setDelay(-1);
+				}
 			}
 			// set to DeadState
 			if((System.nanoTime() - dyingTimer) / 1000000 > 3500)

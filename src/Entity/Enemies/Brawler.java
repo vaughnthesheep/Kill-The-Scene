@@ -136,7 +136,7 @@ public class Brawler extends Enemy {
 	
 	public void setPunching()
 	{
-		if((System.nanoTime() - lastPunch) / 1000000 < punchReload)
+		if((System.nanoTime() - lastPunch) / 1000000 < punchReload || dying)
 			return;
 		punching = true;
 		lastPunch = System.nanoTime();
@@ -260,7 +260,7 @@ public class Brawler extends Enemy {
 				animation.setDelay(-1);
 				width = 60;
 			}
-			if(currentAction == DYING1)
+			else if(currentAction == DYING1)
 			{
 				if((System.nanoTime() - dyingTimer) / 1000000 > DYING_TIME)
 				{
@@ -270,7 +270,7 @@ public class Brawler extends Enemy {
 					dyingTimer = System.nanoTime();
 				}
 			}
-			if(currentAction == DYING2)
+			else if(currentAction == DYING2)
 			{
 				if((System.nanoTime() - dyingTimer) / 1000000 > DYING_TIME)
 				{
@@ -341,33 +341,34 @@ public class Brawler extends Enemy {
 	
 	public void checkAttack(Player player)
 	{
-			
-			// check scratch
-			if(punching)
+		if(dying)
+			return;
+		// check scratch
+		if(punching)
+		{
+			if(facingRight)
 			{
-				if(facingRight)
-				{
-					if(
-						player.getx() > x &&
-						player.getx() < x + punchRange &&
-						player.gety() > y - height/2 &&
-						player.gety() < y + height/2
-					){
-						player.hit(punchDamage, punchForce, false);
-					}
-				}
-				else
-				{
-					if(
-						player.getx() < x &&
-						player.getx() > x - punchRange &&
-						player.gety() > y - height/2 &&
-						player.gety() < y + height/2
-					){
-						player.hit(punchDamage, punchForce, true);
-					}
+				if(
+					player.getx() > x &&
+					player.getx() < x + punchRange &&
+					player.gety() > y - height/2 &&
+					player.gety() < y + height/2
+				){
+					player.hit(punchDamage, punchForce, false);
 				}
 			}
+			else
+			{
+				if(
+					player.getx() < x &&
+					player.getx() > x - punchRange &&
+					player.gety() > y - height/2 &&
+					player.gety() < y + height/2
+				){
+					player.hit(punchDamage, punchForce, true);
+				}
+			}
+		}
 			
 	}
 	
@@ -411,7 +412,7 @@ public class Brawler extends Enemy {
 	
 	public void think()
 	{
-		if(currentAction == PUNCHING)
+		if(currentAction == PUNCHING || dying || dead)
 		{
 			return;
 		}

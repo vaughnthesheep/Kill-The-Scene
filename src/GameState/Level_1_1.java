@@ -19,7 +19,6 @@ public class Level_1_1 extends GameState {
 	private Player player;
 	private HUD hud;
 	private ArrayList<Enemy> enemies;
-	private ArrayList<Explosion> explosions;
 	
 	// y-level in pixels at which player dies when falling (off cliff, down hole)
 
@@ -46,7 +45,6 @@ public class Level_1_1 extends GameState {
 		
 		populateEnemies();
 		
-		explosions = new ArrayList<Explosion>();
 		Soundtrack.setSong("Charlsewood.wav");
 		Soundtrack.play();
 	}
@@ -95,22 +93,10 @@ public class Level_1_1 extends GameState {
 			{
 				enemies.remove(i);
 				i--;
-				explosions.add(new Explosion(e.getx(), e.gety()));
 			}
 			else
 			{
 				e.checkAttack(player);
-			}
-		}
-		
-		// update explosions
-		for(int i = 0; i < explosions.size(); i++)
-		{
-			explosions.get(i).update();
-			if(explosions.get(i).shouldRemove())
-			{
-				explosions.remove(i);
-				i--;
 			}
 		}
 		
@@ -130,13 +116,6 @@ public class Level_1_1 extends GameState {
 		for(int i = 0; i < enemies.size(); i ++)
 		{
 			enemies.get(i).draw(g);
-		}
-		
-		// draw explosions
-		for(int i = 0; i < explosions.size(); i++)
-		{
-			explosions.get(i).setMapPosition((int)tileMap.getx(), (int)tileMap.gety());
-			explosions.get(i).draw(g);
 		}
 		
 		// draw HUD
