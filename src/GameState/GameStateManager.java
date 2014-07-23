@@ -20,7 +20,7 @@ public class GameStateManager {
 	public static final int LEVEL_1_2 = 5;
 	public static final int LEVEL_1_3 = 6;
 	
-	public final int START_LIVES = 1;
+	public final int START_LIVES = 3;
 	public int lives;
 	private int previousState = LEVEL_1_1;
 	
