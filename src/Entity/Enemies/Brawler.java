@@ -6,9 +6,6 @@ import Entity.Player;
 import GameState.GameStateManager;
 import TileMap.*;
 import javax.imageio.ImageIO;
-
-import main.GamePanel;
-import main.Soundtrack;
 import java.awt.*;
 import java.awt.image.BufferedImage; 
 import java.util.ArrayList;
@@ -50,6 +47,7 @@ public class Brawler extends Enemy {
 	private static final int PUNCHING = 4;
 	private static final int DYING1 = 5;
 	private static final int DYING2 = 6;
+	
 	private final long DYING_TIME = 400;
 	
 	
@@ -435,42 +433,51 @@ public class Brawler extends Enemy {
 		{
 			return;
 		}
-		
-		int distance = (int)x - (int)player.getx();
-		int abs = Math.abs(distance);
-		if(abs < GamePanel.WIDTH/2)// if in sight
-		{	
-			if(abs > 30)
-			{
-				if(distance < 0)
-				{
-					right = true;
-					left = false;
-				}
-				else
-				{
-					left = true;
-					right = false;
-				}
-			}
-			else
-			{
-				if(distance < 0 && !facingRight)
-				{
-					right = true;
-					left = false;
-				}
-				else if(distance > 0 && facingRight)
-				{
-					left = true;
-					right = false;
-				}
-				else
-				{
-					setPunching();
-				}
-			}
+		else
+		{
+			setPunching();
 		}
+		/*else
+		{
+		
+			int distance = (int)x - (int)player.getx();
+			int abs = Math.abs(distance);
+			if(abs < GamePanel.WIDTH/2)// if in sight
+			{	
+				if(abs > 30)
+				{
+					if(distance < 0)
+					{
+						right = true;
+						left = false;
+					}
+					else
+					{
+						left = true;
+						right = false;
+					}
+				}
+				else
+				{
+					if(distance < 0 && !facingRight)
+					{
+						right = true;
+						left = false;
+					}
+					else if(distance > 0 && facingRight)
+					{
+						left = true;
+						right = false;
+					}
+					else
+					{
+						left = false;
+						right = false;
+						setPunching();
+					}
+				}
+			}
+		}*/
 	}
 	
 }

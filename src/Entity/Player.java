@@ -100,7 +100,7 @@ public class Player extends MapObject {
 		
 		punchDamage = 5;
 		punchRange = 40;
-		punchForce = 2;
+		punchForce = 5;
 		
 		blockAmount = 5;
 		
