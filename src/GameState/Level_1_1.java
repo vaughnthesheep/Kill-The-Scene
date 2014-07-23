@@ -68,7 +68,7 @@ public class Level_1_1 extends GameState {
 		// brawler test
 		
 		//Brawler b = new Brawler(tileMap, "playersprites.gif");
-		//b.setPosition(200,150);
+		//b.setPosition(250,150);
 		//enemies.add(b);
 	}
 	

@@ -16,7 +16,6 @@ public class Brawler extends Enemy{
 		super(tm);
 		
 	}
-	
 
 	
 }

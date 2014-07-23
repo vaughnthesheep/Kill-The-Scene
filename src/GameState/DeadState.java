@@ -35,7 +35,7 @@ public class DeadState extends GameState {
 	@Override
 	public void init() {
 		
-		gsm.lives -= 1;
+		gsm.decLives(1);
 		gsm.setState(gsm.GAMEOVERSTATE);
 		startTime = System.nanoTime();
 	}
@@ -45,7 +45,7 @@ public class DeadState extends GameState {
 		
 		if((System.nanoTime() - startTime) / 1000000 >= WAIT_TIME)
 		{
-			gsm.setState(gsm.previousState);
+			gsm.resumePrevious();
 		}
 		
 	}
@@ -56,7 +56,7 @@ public class DeadState extends GameState {
 		g.drawImage(sprite,GamePanel.WIDTH-50, GamePanel.HEIGHT-25, null);
 		g.setColor(new Color(252,252,252));
 		g.setFont(font);
-		g.drawString(" x " + gsm.lives, GamePanel.WIDTH, GamePanel.HEIGHT);
+		g.drawString(" x " + gsm.getLives(), GamePanel.WIDTH, GamePanel.HEIGHT);
 	}
 
 	@Override

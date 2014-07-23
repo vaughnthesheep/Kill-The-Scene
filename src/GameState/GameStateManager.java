@@ -9,19 +9,19 @@ public class GameStateManager {
 
 	private ArrayList<GameState> gameStates;
 	private int currentState;
-	public int previousState;
 	private boolean paused = false;
 	private boolean initializing = false;
 	public static final int STARTUP = -1; // not included in gamestate arraylist
 	public static final int MENUSTATE = 0;
 	public static final int DEADSTATE = 1;
 	public static final int GAMEOVERSTATE = 2;
-	public static final int LEVEL_1_1 = 3;
-	public static final int LEVEL_1_2 = 4;
-	public static final int LEVEL_1_3 = 5;
+	public static final int PAUSESTATE = 3;
+	public static final int LEVEL_1_1 = 4;
+	public static final int LEVEL_1_2 = 5;
+	public static final int LEVEL_1_3 = 6;
 	
-	public int lives;
-	
+	private int lives;
+	private int previousState = LEVEL_1_1;
 	
 	public GameStateManager()
 	{
@@ -30,6 +30,7 @@ public class GameStateManager {
 		gameStates.add(new MenuState(this));
 		gameStates.add(new DeadState(this));
 		gameStates.add(new GameOverState(this));
+		gameStates.add(new PauseState(this));
 		gameStates.add(new Level_1_1(this));
 		setState(MENUSTATE);
 		
@@ -44,11 +45,23 @@ public class GameStateManager {
 		{
 			Soundtrack.stop();
 		}
+		
 		initializing = true;
-		previousState = currentState;
 		currentState = state;
 		gameStates.get(currentState).init();
 		initializing = false;
+	}
+	
+	public void resumePrevious()
+	{
+		initializing = true;
+		currentState = previousState;
+		initializing = false;
+		
+		Soundtrack.play();
+		
+		if(paused)
+			paused = false;
 	}
 	
 	public void update()
@@ -65,17 +78,20 @@ public class GameStateManager {
 	
 	public void keyPressed(int k)
 	{
-		if(k == KeyEvent.VK_ESCAPE && currentState != MENUSTATE)
+		if(k == KeyEvent.VK_ESCAPE && (currentState != STARTUP && currentState != MENUSTATE)) 
 		{
-			paused = !paused;
-			if(paused == true)
+			if(paused)
 			{
-				Soundtrack.stop();
+				resumePrevious();
 			}
 			else
 			{
-				Soundtrack.play();
+				previousState = currentState;
+				setState(PAUSESTATE);
+				
+				paused = true;
 			}
+
 		}
 		
 		gameStates.get(currentState).keyPressed(k);
@@ -89,5 +105,15 @@ public class GameStateManager {
 	public boolean isPaused() 
 	{
 		return paused;
+	}
+
+	public void decLives(int i) 
+	{
+		lives -= i;
+	}
+
+	public int getLives() 
+	{
+		return lives;
 	}
 }

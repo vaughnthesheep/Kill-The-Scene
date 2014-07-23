@@ -26,9 +26,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 	private BufferedImage image;
 	private Graphics2D g;
 	
-	// pause screen
-	private Font pauseFont = new Font("Arial", Font.PLAIN, 10);
-	
 	// game state manager
 	private GameStateManager gsm;
 	
@@ -104,21 +101,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 	private void draw()
 	{
 		gsm.draw(g);
-		
-		if(gsm.isPaused())
-		{
-			g.setColor(new Color(0,0,0));
-			g.fillRect(0,0,WIDTH,HEIGHT);
-			g.setColor(new Color(252,252,252));
-			
-			g.setFont(pauseFont);
-			FontMetrics fm = g.getFontMetrics(pauseFont);
-			java.awt.geom.Rectangle2D rect;
-			rect = fm.getStringBounds("PAUSE", g);
-			int textWidth  = (int)(rect.getWidth());
-			int x = (WIDTH - textWidth) / 2;
-			g.drawString("PAUSE", x, HEIGHT/2);
-		}
 	}
 	
 	private void drawToScreen()
