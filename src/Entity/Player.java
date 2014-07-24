@@ -29,7 +29,7 @@ public class Player extends MapObject {
 	// how fast player can be moved left and right in the air
 	private double airMoveSpeed;
 	
-	// fireball
+	// projectile
 	private boolean throwing;
 	private int projectileCost;
 	private int projectileDamage;
@@ -37,12 +37,17 @@ public class Player extends MapObject {
 	private ArrayList<Projectile> projectiles;
 	private boolean throwEnabled;
 	
-	// scratch
+	// Melee
 	private boolean punching;
 	private int punchDamage;
 	private int punchRange;
 	private int punchForce;
 	private boolean punchEnabled;
+	
+	private boolean kicking;
+	private int kickDamage;
+	private int kickRange;
+	private int kickForce;
 	
 	// block
 	private boolean blocking;
@@ -53,7 +58,7 @@ public class Player extends MapObject {
 	
 	// num frames per action (check player sprites)
 	private final int[] numFrames = {
-		2, 4, 1, 3, 1, 3, 3, 1, 1, 1
+		2, 4, 1, 3, 1, 3, 3, 3, 1, 1, 1
 	};
 	
 	// animation actions
@@ -64,9 +69,10 @@ public class Player extends MapObject {
 	private static final int DUCKING = 4;
 	private static final int THROWING = 5;
 	private static final int PUNCHING = 6;
-	private static final int BLOCKING = 7;
-	private static final int DYING1 = 8;
-	private static final int DYING2 = 9;
+	private static final int KICKING = 7;
+	private static final int BLOCKING = 8;
+	private static final int DYING1 = 9;
+	private static final int DYING2 = 10;
 	
 	private final long DYING_TIME = 1600;
 	
@@ -104,9 +110,13 @@ public class Player extends MapObject {
 		throwEnabled = true;
 		
 		punchDamage = 5;
-		punchRange = 40;
-		punchForce = 3;
+		punchRange = 30;
+		punchForce = 2;
 		punchEnabled = true;
+		
+		kickDamage = 5;
+		kickRange = 50;
+		kickForce = 4;
 		
 		blockAmount = 5;
 		
@@ -116,12 +126,12 @@ public class Player extends MapObject {
 					getClass().getResourceAsStream(
 							"/Sprites/Player/vaughn.gif"));
 			sprites = new ArrayList<BufferedImage[]>();
-			for(int i = 0; i < 10; i ++)
+			for(int i = 0; i < numFrames.length; i ++)
 			{
 				BufferedImage[] bi = new BufferedImage[numFrames[i]];
 				for(int j = 0; j < numFrames[i]; j++)
 				{
-					if(i != THROWING && i != PUNCHING && i != BLOCKING && i != DYING1 && i != DYING2)
+					if(i != THROWING && i != PUNCHING && i != KICKING && i != BLOCKING && i != DYING1 && i != DYING2)
 					{// sprites for scratch are 60 px wide, not 30
 						bi[j] = spritesheet.getSubimage(j*width, i*height, width, height);
 					}
@@ -164,11 +174,21 @@ public class Player extends MapObject {
 	
 	public void setPunching()
 	{
-		if(currentAction == THROWING || currentAction == BLOCKING || !punchEnabled)
+		if(currentAction == THROWING || currentAction == KICKING || currentAction == BLOCKING || !punchEnabled)
 			return;
-		punching = true;
-		checkAttack(level.getEnemies());
-		punchEnabled = false;
+		if(currentAction != PUNCHING)
+		{
+			punching = true;
+			checkAttack(level.getEnemies());
+			punchEnabled = false;
+		}
+		else
+		{
+			punching = false;
+			kicking = true;
+			checkAttack(level.getEnemies());
+			punchEnabled = false;
+		}
 	}
 	public void setBlocking(boolean block)
 	{
@@ -226,6 +246,7 @@ public class Player extends MapObject {
 		// cannot move while attacking or ducking (unless in air)
 		if((currentAction == PUNCHING || 
 				currentAction == THROWING || 
+				currentAction == KICKING ||
 				currentAction == DUCKING || 
 				currentAction == BLOCKING || 
 				currentAction == DYING1 || 
@@ -295,6 +316,13 @@ public class Player extends MapObject {
 				throwing = false;
 			}
 		}
+		if(currentAction == KICKING)
+		{
+			if(animation.hasPlayedOnce())
+			{
+				kicking = false;
+			}
+		}
 		
 		// projectile attack
 		
@@ -309,7 +337,7 @@ public class Player extends MapObject {
 			}
 		}
 		
-		// update fireballs
+		// update projectiles
 		for(int i = 0; i < projectiles.size(); i++)
 		{
 			projectiles.get(i).update();
@@ -371,6 +399,16 @@ public class Player extends MapObject {
 			{
 				currentAction = THROWING;
 				animation.setFrames(sprites.get(THROWING));
+				animation.setDelay(100);
+				width = 60;
+			}
+		}
+		else if(kicking)
+		{
+			if(currentAction != KICKING)
+			{
+				currentAction = KICKING;
+				animation.setFrames(sprites.get(KICKING));
 				animation.setDelay(100);
 				width = 60;
 			}
@@ -439,7 +477,7 @@ public class Player extends MapObject {
 		animation.update();
 		
 		// set direction
-		if(currentAction != PUNCHING && currentAction != THROWING)
+		if(currentAction != PUNCHING && currentAction != THROWING && currentAction != KICKING)
 		{
 			if(right) facingRight = true;
 			if(left) facingRight = false;
@@ -491,6 +529,31 @@ public class Player extends MapObject {
 						e.gety() < y + height/2
 					){
 						e.hit(punchDamage, punchForce, true);
+					}
+				}
+			}
+			else if(kicking)
+			{
+				if(facingRight)
+				{
+					if(
+						e.getx() > x &&
+						e.getx() < x + kickRange &&
+						e.gety() > y - height/2 &&
+						e.gety() < y + height/2
+					){
+						e.hit(kickDamage, kickForce, false);
+					}
+				}
+				else
+				{
+					if(
+						e.getx() < x &&
+						e.getx() > x - kickRange &&
+						e.gety() > y - height/2 &&
+						e.gety() < y + height/2
+					){
+						e.hit(kickDamage, kickForce, true);
 					}
 				}
 			}
