@@ -6,24 +6,16 @@ import TileMap.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-
 import main.GamePanel;
 import main.Soundtrack;
 
 
 
-public class Level_1_1 extends GameState {
-	
-	private TileMap tileMap;
-	private Background bg;
-	private Player player;
-	private HUD hud;
-	private ArrayList<Enemy> enemies;
-	
-	// y-level in pixels at which player dies when falling (off cliff, down hole)
+public class Level_1_1 extends LevelState {
 
 	public Level_1_1(GameStateManager gsm)
 	{
+		super(gsm);
 		this.gsm = gsm;
 	}
 	
@@ -33,13 +25,10 @@ public class Level_1_1 extends GameState {
 		tileMap.loadTiles("/Tilesets/grasstileset.gif");
 		tileMap.loadMap("/Maps/level1-1.map");
 		tileMap.setPosition(0, 0);
-		
-		// y-level in pixels at which player dies when falling (off cliff, down hole)
+		bg = new Background("/Backgrounds/grassbg1.gif", 0.1);
 		fallLimit = 350;
 		
-		bg = new Background("/Backgrounds/grassbg1.gif", 0.1);
-		
-		player = new Player(tileMap, gsm);
+		player = new Player(tileMap, gsm, this);
 		player.setPosition(100,100);
 		hud = new HUD(player);
 		
@@ -70,91 +59,44 @@ public class Level_1_1 extends GameState {
 		
 	}
 	
+	public ArrayList<Enemy> getEnemies()
+	{
+		return enemies;
+	}
+	
 	public void update()
 	{
-		// update player
 		player.update();
 		tileMap.setPosition(
 			GamePanel.WIDTH / 2 - player.getx(),
 			GamePanel.HEIGHT / 2 - player.gety()
 		);
-		// update background
 		bg.setPosition(tileMap.getx(), tileMap.gety());
 		
-		// attack enemies
-		player.checkAttack(enemies);
-		
-		// update enemies
-		for(int i = 0; i < enemies.size(); i++)
-		{
-			Enemy e = enemies.get(i);
-			e.update();
-			if(e.isDead())
-			{
-				enemies.remove(i);
-				i--;
-			}
-			else
-			{
-				e.checkAttack(player);
-			}
-		}
+		updateEnemies();
 		
 	}
 	public void draw(Graphics2D g)
 	{
-		// draw bg
 		bg.draw(g);
-		
-		// draw tilemap
 		tileMap.draw(g);
-		
-		// draw player
 		player.draw(g);
 		
-		// draw enemies
 		for(int i = 0; i < enemies.size(); i ++)
 		{
 			enemies.get(i).draw(g);
 		}
 		
-		// draw HUD
 		hud.draw(g);
 	}
 	
 	
 	public void keyPressed(int k)
 	{
-		// controls do nothing if player is dying
-		if(!player.isDying())
-		{
-			if(k == KeyEvent.VK_LEFT) player.setLeft(true);
-			if(k == KeyEvent.VK_RIGHT) player.setRight(true);
-			if(k == KeyEvent.VK_UP) player.setUp(true);
-			if(k == KeyEvent.VK_DOWN) player.setDown(true);
-			if(k == KeyEvent.VK_W) player.setJumping(true);
-			if(k == KeyEvent.VK_E) player.setBlocking(true);
-			if(k == KeyEvent.VK_R) player.setPunching();
-			if(k == KeyEvent.VK_F) player.setThrowing();
-		}
+		player.keyPressed(k);
 	}
 	public void keyReleased(int k)
 	{
-		if(k == KeyEvent.VK_LEFT) player.setLeft(false);
-		if(k == KeyEvent.VK_RIGHT) player.setRight(false);
-		if(k == KeyEvent.VK_UP) player.setUp(false);
-		if(k == KeyEvent.VK_DOWN) player.setDown(false);
-		if(k == KeyEvent.VK_W) player.setJumping(false);
-		if(k == KeyEvent.VK_E) player.setBlocking(false);
-		
-		if(k == -1)
-		{
-			player.setLeft(false);
-			player.setRight(false);
-			player.setUp(false);
-			player.setDown(false);
-			player.setJumping(false);
-			player.setBlocking(false);
-		}
+		player.keyReleased(k);
 	}
 }

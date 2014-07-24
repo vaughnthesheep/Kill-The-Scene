@@ -1,18 +1,22 @@
 package Entity;
 
+import GameState.GameState;
 import GameState.GameStateManager;
+import GameState.LevelState;
 import TileMap.*;
 import javax.imageio.ImageIO;
 
 import main.Soundtrack;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage; 
 import java.util.ArrayList;
 
 public class Player extends MapObject {
 	
 	GameStateManager gsm;
+	LevelState level;
 
 	// player variables
 	private int health;
@@ -68,10 +72,11 @@ public class Player extends MapObject {
 	private final long DYING_TIME = 1600;
 	
 	
-	public Player(TileMap tm, GameStateManager gsm)
+	public Player(TileMap tm, GameStateManager gsm, LevelState level)
 	{
 		super(tm);
 		this.gsm = gsm;
+		this.level = level;
 		
 		width = 30;
 		height = 50;
@@ -160,6 +165,7 @@ public class Player extends MapObject {
 		if(currentAction == THROWING || currentAction == BLOCKING)
 			return;
 		punching = true;
+		checkAttack(level.getEnemies());
 	}
 	public void setBlocking(boolean block)
 	{
@@ -435,6 +441,21 @@ public class Player extends MapObject {
 			if(right) facingRight = true;
 			if(left) facingRight = false;
 		}
+		
+		ArrayList<Enemy> enemies = level.getEnemies();
+		
+		for(int i = 0; i < enemies.size(); i++)
+		{
+			Enemy e = enemies.get(i);
+			for(int j = 0; j < projectiles.size(); j++)
+			{
+				if(!projectiles.get(j).isHit() && projectiles.get(j).intersects(e) && !e.isDying() && !e.isDead())
+				{
+					e.hit(projectileDamage, projectileForce, !projectiles.get(j).facingRight);
+					projectiles.get(j).setHit();
+				}
+			}
+		}
 	}
 	
 	public void checkAttack(ArrayList<Enemy> enemies)
@@ -470,18 +491,7 @@ public class Player extends MapObject {
 					}
 				}
 			}
-			
-			// projectiles
-			for(int j = 0; j < projectiles.size(); j++)
-			{
-				if(!projectiles.get(j).isHit() && projectiles.get(j).intersects(e) && !e.isDying() && !e.isDead())
-				{
-					e.hit(projectileDamage, projectileForce, !projectiles.get(j).facingRight);
-					projectiles.get(j).setHit();
-				}
-			}
 		}
-		
 	}
 	
 	public void hit(int damage, int force, boolean fromRight)
@@ -548,4 +558,37 @@ public class Player extends MapObject {
 		super.draw(g);
 	}
 	
+	public void keyPressed(int k)
+	{
+		if(!dying)
+		{
+			if(k == KeyEvent.VK_LEFT) setLeft(true);
+			if(k == KeyEvent.VK_RIGHT) setRight(true);
+			if(k == KeyEvent.VK_UP) setUp(true);
+			if(k == KeyEvent.VK_DOWN) setDown(true);
+			if(k == KeyEvent.VK_W) setJumping(true);
+			if(k == KeyEvent.VK_E) setBlocking(true);
+			if(k == KeyEvent.VK_R) setPunching();
+			if(k == KeyEvent.VK_F) setThrowing();
+		}
+	}
+	public void keyReleased(int k)
+	{
+		if(k == KeyEvent.VK_LEFT) setLeft(false);
+		if(k == KeyEvent.VK_RIGHT) setRight(false);
+		if(k == KeyEvent.VK_UP) setUp(false);
+		if(k == KeyEvent.VK_DOWN) setDown(false);
+		if(k == KeyEvent.VK_W) setJumping(false);
+		if(k == KeyEvent.VK_E) setBlocking(false);
+		
+		if(k == -1)
+		{
+			setLeft(false);
+			setRight(false);
+			setUp(false);
+			setDown(false);
+			setJumping(false);
+			setBlocking(false);
+		}
+	}
 }
