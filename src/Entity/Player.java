@@ -35,12 +35,14 @@ public class Player extends MapObject {
 	private int projectileDamage;
 	private int projectileForce;
 	private ArrayList<Projectile> projectiles;
+	private boolean throwEnabled;
 	
 	// scratch
 	private boolean punching;
 	private int punchDamage;
 	private int punchRange;
 	private int punchForce;
+	private boolean punchEnabled;
 	
 	// block
 	private boolean blocking;
@@ -97,12 +99,14 @@ public class Player extends MapObject {
 		
 		projectileCost = 5;
 		projectileDamage = 5;
-		projectileForce = 2;
+		projectileForce = 3;
 		projectiles = new ArrayList<Projectile>();
+		throwEnabled = true;
 		
 		punchDamage = 5;
 		punchRange = 40;
-		punchForce = 5;
+		punchForce = 3;
+		punchEnabled = true;
 		
 		blockAmount = 5;
 		
@@ -152,17 +156,19 @@ public class Player extends MapObject {
 	
 	public void setThrowing()
 	{
-		if(currentAction == PUNCHING || currentAction == BLOCKING)
+		if(currentAction == PUNCHING || currentAction == BLOCKING || !throwEnabled)
 			return;
 		throwing = true;
+		throwEnabled = false;
 	}
 	
 	public void setPunching()
 	{
-		if(currentAction == THROWING || currentAction == BLOCKING)
+		if(currentAction == THROWING || currentAction == BLOCKING || !punchEnabled)
 			return;
 		punching = true;
 		checkAttack(level.getEnemies());
+		punchEnabled = false;
 	}
 	public void setBlocking(boolean block)
 	{
@@ -577,6 +583,8 @@ public class Player extends MapObject {
 		if(k == KeyEvent.VK_DOWN) setDown(false);
 		if(k == KeyEvent.VK_W) setJumping(false);
 		if(k == KeyEvent.VK_E) setBlocking(false);
+		if(k == KeyEvent.VK_R) punchEnabled = true;
+		if(k == KeyEvent.VK_F) throwEnabled = true;
 		
 		if(k == -1)
 		{
