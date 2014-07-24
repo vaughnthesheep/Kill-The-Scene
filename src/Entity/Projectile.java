@@ -12,12 +12,17 @@ public class Projectile extends MapObject{
 	private BufferedImage[] sprites;
 	private BufferedImage[] hitSprites;
 	private double angleRatio;
-	private Player player;
+	private boolean playerFalling;
 
-	public Projectile(TileMap tm, Player player)
+	public Projectile(TileMap tm, boolean up, boolean down, boolean left, boolean right, boolean facingRight, boolean falling)
 	{
 		super(tm);
-		this.player = player;
+		this.up = up;
+		this.down = down;
+		this.left = left;
+		this.right = right;
+		this.facingRight = facingRight;
+		playerFalling = falling;
 		hit = false;
 		
 		moveSpeed = 3.8;
@@ -61,55 +66,52 @@ public class Projectile extends MapObject{
 		{
 			e.printStackTrace();
 		}
-		
-		setVector(player);
-		
+		setVector();
 	}
 	
-	private void setVector(Player player)
+	public void setVector()
 	{
-		// set direction
-		if(player.up && player.left)
+		if(up && left)
 		{
 			dx = -moveSpeed*angleRatio;
 			dy = -moveSpeed*angleRatio;
 		}
-		else if(player.up && player.right)
+		else if(up && right)
 		{
 			dx = moveSpeed*angleRatio;
 			dy = -moveSpeed*angleRatio;
 		}
-		else if(player.up)
+		else if(up)
 		{
 			dx = 0;
 			dy = -moveSpeed;
 		}
-		else if(player.down && player.left && player.falling)
+		else if(down && left && playerFalling)
 		{
 			dx = -moveSpeed*angleRatio;
 			dy = moveSpeed*angleRatio;
 		}
-		else if(player.down && player.right && player.falling)
+		else if(down && right && playerFalling)
 		{
 			dx = moveSpeed*angleRatio;
 			dy = moveSpeed*angleRatio;
 		}
-		else if(player.down && player.falling)
+		else if(down && playerFalling)
 		{
 			dx = 0;
 			dy = moveSpeed;
 		}
-		else if(player.left)
+		else if(left)
 		{
 			dx = -moveSpeed;
 			dy = 0;
 		}
-		else if(player.right)
+		else if(right)
 		{
 			dx = moveSpeed;
 			dy = 0;
 		}
-		else if(player.facingRight)
+		else if(facingRight)
 		{
 			dx = moveSpeed;
 			dy = 0;
@@ -140,14 +142,9 @@ public class Projectile extends MapObject{
 	
 	public void update()
 	{
+		if(!hit)
+			hit = didCollide();
 		checkTileMapCollision();
-		setPosition(xtemp, ytemp);
-		
-		if((dx == 0 && !hit) || (dy == 0 && !hit))
-		{
-			setHit();
-		}
-		
 		animation.update();
 		if(hit && animation.hasPlayedOnce())
 		{

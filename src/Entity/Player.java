@@ -329,7 +329,7 @@ public class Player extends MapObject {
 		if(throwing && currentAction != THROWING && strength >= projectileCost)
 		{
 			strength -= projectileCost;
-			Projectile p = new Projectile(tileMap, this);
+			Projectile p = new Projectile(tileMap, up, down, left, right, facingRight, falling);
 			int start = (int)x;
 			if(!facingRight)
 				start -= 10;

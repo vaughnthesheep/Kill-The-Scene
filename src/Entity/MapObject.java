@@ -188,6 +188,56 @@ public abstract class MapObject {
 		}
 	}
 	
+	protected boolean didCollide()
+	{
+		currCol = (int)x / tileSize;
+		currRow = (int)y / tileSize;
+		
+		xdest = x + dx;
+		ydest = y + dy;
+		
+		xtemp = x;
+		ytemp = y;
+		
+		calculateCorners(x, ydest);
+		
+		// If we hit our head on a block tile
+		if(dy < 0)
+		{
+			if(topLeft || topRight)
+			{
+				return true;
+			}
+		}
+		
+		// If we land on a block tile
+		if(dy > 0)
+		{
+			if(bottomLeft || bottomRight)
+			{
+				return true;
+			}
+		}
+		
+		calculateCorners(xdest, y);
+		
+		if(dx < 0)
+		{
+			if(topLeft || bottomLeft)
+			{
+				return true;
+			}
+		}
+		if(dx > 0)
+		{
+			if(topRight || bottomRight)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public int getx(){return (int)x;}
 	public int gety(){return (int)y;}
 	public int getWidth(){return width;}
