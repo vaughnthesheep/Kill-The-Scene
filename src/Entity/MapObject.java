@@ -151,6 +151,7 @@ public abstract class MapObject {
 		
 		calculateCorners(xdest, y);
 		
+		// If we walk into a wall left
 		if(dx < 0)
 		{
 			if(topLeft || bottomLeft)
@@ -163,6 +164,8 @@ public abstract class MapObject {
 				xtemp += dx;
 			}
 		}
+		
+		// If we walk into a wall right
 		if(dx > 0)
 		{
 			if(topRight || bottomRight)

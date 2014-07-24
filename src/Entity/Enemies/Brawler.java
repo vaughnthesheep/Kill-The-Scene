@@ -16,13 +16,14 @@ import java.util.ArrayList;
 public class Brawler extends Enemy {
 	
 	GameStateManager gsm;
+	TileMap tm;
 	Player player;
 
 	// player variables
 	private int health;
 	private int maxHealth;
 	private long dyingTimer;
-	private long flinchTimer; // use when dying
+	private long flinchTimer; // use when dying?
 	private double airMoveSpeed;
 	
 	
@@ -58,6 +59,7 @@ public class Brawler extends Enemy {
 	{
 		super(tm);
 		this.gsm = gsm;
+		this.tm = tm;
 		this.facingRight = facingRight;
 		this.player = player;
 		
@@ -74,6 +76,7 @@ public class Brawler extends Enemy {
 		maxFallSpeed = 4.0;
 		jumpStart = -5.5;
 		stopJumpSpeed = 0.3;
+		
 		
 		health = maxHealth = 10;
 		
@@ -189,7 +192,7 @@ public class Brawler extends Enemy {
 		}
 		
 		// cannot move while attacking or ducking (unless in air)
-		if((currentAction == PUNCHING || currentAction == DYING1 || currentAction == DYING2) && !(jumping || falling))
+		if((currentAction == PUNCHING || currentAction == DYING1 || currentAction == DYING2) && !(jumping || falling || isHit))
 		{
 			dx = 0;
 		}
@@ -335,6 +338,7 @@ public class Brawler extends Enemy {
 			if(right) facingRight = true;
 			if(left) facingRight = false;
 		}
+		isHit = false;
 	}
 	
 	public void checkAttack(Player player)
@@ -388,6 +392,7 @@ public class Brawler extends Enemy {
 		{
 			dx = force;
 		}
+		isHit = true;
 	}
 	
 	public void dying()
@@ -416,7 +421,6 @@ public class Brawler extends Enemy {
 		}
 		else
 		{
-		
 			int distance = (int)x - (int)player.getx();
 			int abs = Math.abs(distance);
 			if(abs < GamePanel.WIDTH/2)// if in sight
@@ -453,8 +457,67 @@ public class Brawler extends Enemy {
 						setPunching();
 					}
 				}
+				boolean stuck = checkStuck();
+				if(stuck)
+				{
+					jumping = true;
+				}
 			}
 		}
+	}
+	
+	private boolean checkStuck()
+	{
+		tileSize = tm.getTileSize();
+		int leftTile = (int)(x - tileSize) / tileSize;
+        int rightTile = (int)(x + tileSize) / tileSize;
+        int row = (int)(y / tileSize);
+        int leftType;
+        int rightType;
+        try
+        {
+	        leftType = tm.getType(row, leftTile);
+	        rightType = tm.getType(row, rightTile);
+        }
+        catch(Exception e)
+        {
+        	dead = true;
+        	return false;
+        }
+        
+		if(currentAction == WALKING)
+		{
+			if(left)
+			{
+				
+				if(leftType == Tile.BLOCKED)
+				{
+					jumping = true;
+				}
+				else
+				{
+					jumping = false;
+				}
+			}
+			
+			// If we walk into a wall right
+			if(right)
+			{
+				if(rightType == Tile.BLOCKED)
+				{
+					jumping = true;
+				}
+				else
+				{
+					jumping = false;
+				}
+			}
+		}
+		else
+		{
+			return false;
+		}
+		return false;
 	}
 	
 }

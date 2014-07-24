@@ -9,6 +9,7 @@ public abstract class Enemy extends MapObject {
 	protected boolean dying;
 	protected boolean dead;
 	protected int damage;
+	protected boolean isHit;
 
 	public Enemy(TileMap tm)
 	{

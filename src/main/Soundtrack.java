@@ -9,7 +9,6 @@ import sun.applet.Main;
 public class Soundtrack {
 	
 	private static Clip song;
-	private static boolean playing = false;
 	
 	public Soundtrack()
 	{
