@@ -23,7 +23,7 @@ public class DeadState extends GameState {
 		font = new Font("Arial", Font.PLAIN, 10);
 		try
 		{
-			spritesheet =  ImageIO.read(getClass().getResourceAsStream("/Sprites/Player/spritesheet.gif"));
+			spritesheet =  ImageIO.read(getClass().getResourceAsStream("/Sprites/Player/vaughn.gif"));
 			sprite = spritesheet.getSubimage(0, 0, 30, 50);
 		}
 		catch(Exception e)

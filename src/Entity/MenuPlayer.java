@@ -41,7 +41,7 @@ public class MenuPlayer {
 			
 			BufferedImage spritesheet = ImageIO.read(
 					getClass().getResourceAsStream(
-							"/Sprites/Player/spritesheet.gif"));
+							"/Sprites/Player/vaughn.gif"));
 			sprites = new ArrayList<BufferedImage[]>();
 			for(int i = 0; i < 7; i ++) //!!!!!!!!! 7 = number of different animations, change for other players.
 			{
