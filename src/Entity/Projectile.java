@@ -142,9 +142,10 @@ public class Projectile extends MapObject{
 	
 	public void update()
 	{
-		if(!hit)
-			hit = didCollide();
+		if(!hit && didCollide())
+			setHit();
 		checkTileMapCollision();
+		setPosition(xtemp, ytemp);
 		animation.update();
 		if(hit && animation.hasPlayedOnce())
 		{
