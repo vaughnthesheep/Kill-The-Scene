@@ -1,5 +1,7 @@
 package Entity;
 
+import java.awt.Graphics2D;
+
 import TileMap.TileMap;
 
 public abstract class Enemy extends MapObject {
@@ -30,5 +32,7 @@ public abstract class Enemy extends MapObject {
 	{
 		
 	}
+	
+
 	
 }

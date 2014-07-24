@@ -77,6 +77,7 @@ public class Brawler extends Enemy {
 		jumpStart = -5.5;
 		stopJumpSpeed = 0.3;
 		
+		flinchTimer = 400;
 		
 		health = maxHealth = 10;
 		
@@ -408,9 +409,17 @@ public class Brawler extends Enemy {
 	
 	public void draw(Graphics2D g)
 	{
-		// IMPORTANT FIRST METHOD
+		if(dying)
+		{
+			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
+			if(elapsed / 100 % 2 == 0)
+			{
+				return;
+			}
+		}
 		setMapPosition();
 		super.draw(g);
+		
 	}
 	
 	public void think()
