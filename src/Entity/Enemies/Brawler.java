@@ -21,9 +21,8 @@ public class Brawler extends Enemy {
 	// player variables
 	private int health;
 	private int maxHealth;
-	private long dyingTimer;	// used twice, once for each frame
-	private long flinchTimer;
-	private long maxFlinchTime;
+	private long dyingTimer;
+	private long flinchTimer; // use when dying
 	private double airMoveSpeed;
 	
 	
@@ -75,7 +74,6 @@ public class Brawler extends Enemy {
 		maxFallSpeed = 4.0;
 		jumpStart = -5.5;
 		stopJumpSpeed = 0.3;
-		maxFlinchTime = 1000;
 		
 		health = maxHealth = 10;
 		

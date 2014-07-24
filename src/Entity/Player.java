@@ -1,13 +1,10 @@
 package Entity;
 
-import GameState.GameState;
 import GameState.GameStateManager;
 import GameState.LevelState;
 import TileMap.*;
 import javax.imageio.ImageIO;
-
 import main.Soundtrack;
-
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage; 
@@ -349,7 +346,7 @@ public class Player extends MapObject {
 			// set to DeadState
 			if((System.nanoTime() - dyingTimer) / 1000000 > 3500)
 			{
-				gsm.setState(gsm.DEADSTATE);
+				gsm.setState(GameStateManager.DEADSTATE);
 			}
 		}
 		else if(punching)

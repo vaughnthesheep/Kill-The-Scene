@@ -4,7 +4,6 @@ import Entity.*;
 import Entity.Enemies.Brawler;
 import TileMap.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import main.GamePanel;
 import main.Soundtrack;

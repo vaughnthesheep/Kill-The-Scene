@@ -33,7 +33,7 @@ public class GameOverState extends GameState {
 		{
 			gsm.lives = gsm.START_LIVES;
 			gsm.reset();
-			gsm.setState(gsm.MENUSTATE);
+			gsm.setState(GameStateManager.MENUSTATE);
 		}
 		
 	}
@@ -54,15 +54,13 @@ public class GameOverState extends GameState {
 		
 	}
 
-	@Override
-	public void keyPressed(int k) {
-		// TODO Auto-generated method stub
-		
+	public void keyPressed(int k)
+	{
+		return;
 	}
-
-	@Override
-	public void keyReleased(int k) {
-		// TODO Auto-generated method stub
-		
+	
+	public void keyReleased(int k)
+	{
+		return;
 	}
 }
