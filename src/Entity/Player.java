@@ -326,20 +326,17 @@ public class Player extends MapObject {
 		
 		// projectile attack
 		
-		if(throwing && currentAction != THROWING)
+		if(throwing && currentAction != THROWING && strength >= projectileCost)
 		{
-			if(strength >= projectileCost)
-			{
-				strength -= projectileCost;
-				Projectile p = new Projectile(tileMap, facingRight);
-				int start = (int)x;
-				if(!facingRight)
-					start -= 10;
-				else
-					start += 10;
-				p.setPosition(start, y - 10);
-				projectiles.add(p);
-			}
+			strength -= projectileCost;
+			Projectile p = new Projectile(tileMap, this);
+			int start = (int)x;
+			if(!facingRight)
+				start -= 10;
+			else
+				start += 10;
+			p.setPosition(start, y - 10);
+			projectiles.add(p);
 		}
 		
 		// update projectiles
