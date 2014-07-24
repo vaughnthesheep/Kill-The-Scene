@@ -434,7 +434,7 @@ public class Brawler extends Enemy {
 			int abs = Math.abs(distance);
 			if(abs < GamePanel.WIDTH/2)// if in sight
 			{	
-				if(abs > 30)
+				if(abs > punchRange - 5)
 				{
 					if(distance < 0)
 					{

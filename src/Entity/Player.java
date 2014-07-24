@@ -564,25 +564,54 @@ public class Player extends MapObject {
 	{
 		if(dying) return;
 		if(flinching) return;
-		health -= damage;
-		if(health < 0) health = 0;
-		if(health == 0)
+		if(blocking && fromRight == facingRight)
 		{
-			dying();
+			int reduced = damage - blockAmount;
+			if(reduced <= 0)
+				return;
+			health -= reduced;
+			if(health < 0) health = 0;
+			if(health == 0)
+			{
+				dying();
+			}
+			else
+			{
+				flinching = true;
+				flinchTimer = System.nanoTime();
+			}
+			dy = -force;
+			if(fromRight)
+			{
+				dx = -force;
+			}
+			else
+			{
+				dx = force;
+			}
 		}
 		else
 		{
-			flinching = true;
-			flinchTimer = System.nanoTime();
-		}
-		dy = -force;
-		if(fromRight)
-		{
-			dx = -force;
-		}
-		else
-		{
-			dx = force;
+			health -= damage;
+			if(health < 0) health = 0;
+			if(health == 0)
+			{
+				dying();
+			}
+			else
+			{
+				flinching = true;
+				flinchTimer = System.nanoTime();
+			}
+			dy = -force;
+			if(fromRight)
+			{
+				dx = -force;
+			}
+			else
+			{
+				dx = force;
+			}
 		}
 	}
 	
