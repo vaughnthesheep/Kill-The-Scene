@@ -77,7 +77,7 @@ public class Brawler extends Enemy {
 		jumpStart = -5.5;
 		stopJumpSpeed = 0.3;
 		
-		flinchTimer = 400;
+		flinchTimer = 100;
 		
 		health = maxHealth = 10;
 		

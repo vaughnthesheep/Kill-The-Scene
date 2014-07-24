@@ -166,7 +166,7 @@ public class Player extends MapObject {
 	
 	public void setThrowing()
 	{
-		if(currentAction == PUNCHING || currentAction == BLOCKING || !throwEnabled)
+		if(currentAction == PUNCHING || currentAction == BLOCKING || !throwEnabled || strength < projectileCost)
 			return;
 		throwing = true;
 		throwEnabled = false;
@@ -332,7 +332,12 @@ public class Player extends MapObject {
 			{
 				strength -= projectileCost;
 				Projectile p = new Projectile(tileMap, facingRight);
-				p.setPosition(x, y);
+				int start = (int)x;
+				if(!facingRight)
+					start -= 10;
+				else
+					start += 10;
+				p.setPosition(start, y - 10);
 				projectiles.add(p);
 			}
 		}

@@ -23,17 +23,17 @@ public class Projectile extends MapObject{
 		if(right) dx = moveSpeed;
 		else dx = -moveSpeed;
 		
-		width = 30;
-		height = 30;
-		cwidth = 14;
-		cheight = 14;
+		width = 25;
+		height = 25;
+		cwidth = 20;
+		cheight = 20;
 		
 		// load sprites
 		
 		try
 		{
-			BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream("/Sprites/Player/fireball.gif"));
-			sprites = new BufferedImage[4];
+			BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream("/Sprites/Projectiles/cd.gif"));
+			sprites = new BufferedImage[8];
 			for(int i = 0; i < sprites.length; i++)
 			{
 				sprites[i] = spritesheet.getSubimage(
