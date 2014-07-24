@@ -69,7 +69,7 @@ public class Projectile extends MapObject{
 		setVector();
 	}
 	
-	public void setVector()
+	public void setVector() // change for certain proj. weapons
 	{
 		if(up && left)
 		{

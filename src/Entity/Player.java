@@ -411,7 +411,7 @@ public class Player extends MapObject {
 			{
 				currentAction = KICKING;
 				animation.setFrames(sprites.get(KICKING));
-				animation.setDelay(100);
+				animation.setDelay(150);
 				width = 60;
 			}
 		}
