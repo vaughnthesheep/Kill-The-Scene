@@ -3,32 +3,51 @@ package GameState;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
+import main.GamePanel;
 import main.Soundtrack;
 
 public class GameStateManager {
 
 	private ArrayList<GameState> gameStates;
+	private GamePanel gp;
 	private int currentState;
 	private boolean paused = false;
 	private boolean initializing = false;
+	
 	public static final int STARTUP = -1; // not included in gamestate arraylist
 	public static final int MENUSTATE = 0;
-	public static final int DEADSTATE = 1;
-	public static final int GAMEOVERSTATE = 2;
-	public static final int PAUSESTATE = 3;
-	public static final int LEVEL_1_1 = 4;
-	public static final int LEVEL_1_2 = 5;
-	public static final int LEVEL_1_3 = 6;
+	public static final int HELPSTATE = 1;
+	public static final int CHOOSECHARACTERSTATE = 2;
+	public static final int DEADSTATE = 3;
+	public static final int GAMEOVERSTATE = 4;
+	public static final int PAUSESTATE = 5;
+	public static final int LEVEL_1_1 = 6;
+	public static final int LEVEL_1_2 = 7;
+	public static final int LEVEL_1_3 = 8;
 	
+	public static final String[] characters = 
+							{
+								"VAUGHN",
+								"BRAINZZZ"
+							};
 	public final int START_LIVES = 3;
+	public double money;
 	public int lives;
+	public String character;
+	public final String DEFAULT_CHARACTER = "VAUGHN";
+	
+	
 	private int previousState = LEVEL_1_1;
 	
-	public GameStateManager()
+	public GameStateManager(GamePanel panel)
 	{
+		gp = panel;
 		currentState = STARTUP;
+		character = DEFAULT_CHARACTER;
 		gameStates = new ArrayList<GameState>();
 		gameStates.add(new MenuState(this));
+		gameStates.add(new HelpState(this));
+		gameStates.add(new ChooseCharacterState(this));
 		gameStates.add(new DeadState(this));
 		gameStates.add(new GameOverState(this));
 		gameStates.add(new PauseState(this));
@@ -42,7 +61,7 @@ public class GameStateManager {
 	
 	public void setState(int state)
 	{
-		if(currentState != STARTUP && Soundtrack.isPlaying())
+		if(currentState != STARTUP && currentState != MENUSTATE && Soundtrack.isPlaying())
 		{
 			Soundtrack.stop();
 		}
@@ -85,6 +104,8 @@ public class GameStateManager {
 	{
 		if(k == KeyEvent.VK_ESCAPE && (currentState != STARTUP &&
 										currentState != MENUSTATE &&
+										currentState != CHOOSECHARACTERSTATE &&
+										currentState != HELPSTATE &&
 										currentState != DEADSTATE &&
 										currentState != GAMEOVERSTATE)) 
 		{
@@ -127,6 +148,6 @@ public class GameStateManager {
 	
 	public void reset()
 	{
-		gameStates.set(MENUSTATE, new MenuState(this));
+		gp.init();
 	}
 }

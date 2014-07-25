@@ -124,7 +124,7 @@ public class Player extends MapObject {
 		try{
 			BufferedImage spritesheet = ImageIO.read(
 					getClass().getResourceAsStream(
-							"/Sprites/Player/vaughn.gif"));
+							"/Sprites/Player/" + gsm.character + "/spritesheet.gif"));
 			sprites = new ArrayList<BufferedImage[]>();
 			for(int i = 0; i < numFrames.length; i ++)
 			{
@@ -166,7 +166,7 @@ public class Player extends MapObject {
 	
 	public void setThrowing()
 	{
-		if(currentAction == PUNCHING || currentAction == BLOCKING || !throwEnabled || strength < projectileCost)
+		if(currentAction == PUNCHING || currentAction == BLOCKING || currentAction == KICKING || !throwEnabled || strength < projectileCost)
 			return;
 		throwing = true;
 		throwEnabled = false;
@@ -192,7 +192,7 @@ public class Player extends MapObject {
 	}
 	public void setBlocking(boolean block)
 	{
-		if(currentAction == PUNCHING || currentAction == THROWING)
+		if(currentAction == PUNCHING || currentAction == THROWING || currentAction == KICKING)
 			return;
 		blocking = block;
 	}
@@ -411,7 +411,7 @@ public class Player extends MapObject {
 			{
 				currentAction = KICKING;
 				animation.setFrames(sprites.get(KICKING));
-				animation.setDelay(150);
+				animation.setDelay(120);
 				width = 60;
 			}
 		}

@@ -33,7 +33,10 @@ public class MenuState extends GameState {
 		this.gsm = gsm;
 		intro = true;
 		color = new Color(168, 16, 0);
-		
+	}
+	
+	public void init()
+	{
 		try
 		{
 			font = new Font("Arial", Font.PLAIN, 10);
@@ -51,7 +54,7 @@ public class MenuState extends GameState {
 			e.printStackTrace();
 		}
 		
-		menuplayer = new MenuPlayer(-30, 100);
+		menuplayer = new MenuPlayer(-30, 100, gsm.DEFAULT_CHARACTER, true);
 		
 	}
 	
@@ -104,7 +107,7 @@ public class MenuState extends GameState {
 	{
 		if(currentChoice == 0)
 		{
-			gsm.setState(GameStateManager.LEVEL_1_1);
+			gsm.setState(GameStateManager.CHOOSECHARACTERSTATE);
 		}
 		if(currentChoice == 1)
 		{
@@ -144,7 +147,7 @@ public class MenuState extends GameState {
 		{
 			if(intro)
 			{
-				
+				// contra code
 			}
 			else
 			{
@@ -160,7 +163,7 @@ public class MenuState extends GameState {
 		{
 			if(intro)
 			{
-				
+				// contra code
 			}
 			else
 			{
@@ -175,12 +178,6 @@ public class MenuState extends GameState {
 	
 	public void keyReleased(int k)
 	{
-		
-	}
-
-	@Override
-	public void init() {
-		// TODO Auto-generated method stub
 		
 	}
 	

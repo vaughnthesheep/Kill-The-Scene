@@ -14,8 +14,7 @@ public class DeadState extends GameState {
 	private Font font;
 	private long startTime;
 	private final long WAIT_TIME = 2000; // milliseconds
-	private BufferedImage sprite;
-	private BufferedImage spritesheet;
+	private BufferedImage head;
 	
 	public DeadState(GameStateManager gsm)
 	{
@@ -23,8 +22,7 @@ public class DeadState extends GameState {
 		font = new Font("Arial", Font.PLAIN, 10);
 		try
 		{
-			spritesheet =  ImageIO.read(getClass().getResourceAsStream("/Sprites/Player/vaughn.gif"));
-			sprite = spritesheet.getSubimage(0, 0, 30, 50);
+			head =  ImageIO.read(getClass().getResourceAsStream("/Sprites/Player/" + gsm.character + "/head.gif"));
 		}
 		catch(Exception e)
 		{
@@ -53,7 +51,7 @@ public class DeadState extends GameState {
 		
 		g.setColor(Color.BLACK);
 		g.fillRect(0,0,GamePanel.WIDTH,GamePanel.HEIGHT);
-		g.drawImage(sprite,GamePanel.WIDTH/2-25, GamePanel.HEIGHT/2-25, null);
+		g.drawImage(head,GamePanel.WIDTH/2-25, GamePanel.HEIGHT/2 - 20, null);
 		g.setColor(new Color(252,252,252));
 		g.setFont(font);
 		g.drawString(" x " + gsm.lives, GamePanel.WIDTH/2, GamePanel.HEIGHT/2);
@@ -65,7 +63,7 @@ public class DeadState extends GameState {
 	}
 	public void keyReleased(int k)
 	{
-		return;		
+		return;
 	}
 
 }

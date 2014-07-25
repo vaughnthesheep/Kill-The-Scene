@@ -31,9 +31,7 @@ public class GameOverState extends GameState {
 	public void update() {
 		if((System.nanoTime() - startTime) / 1000000 >= WAIT_TIME)
 		{
-			gsm.lives = gsm.START_LIVES;
 			gsm.reset();
-			gsm.setState(GameStateManager.MENUSTATE);
 		}
 		
 	}

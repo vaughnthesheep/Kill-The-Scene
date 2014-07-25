@@ -31,7 +31,7 @@ public class MenuPlayer {
 	private static final int BLOCKING = 7;
 	private static final int DYING = 8;
 	
-	public MenuPlayer(int x, int y)
+	public MenuPlayer(int x, int y, String character, boolean walking)
 	{
 		this.x = x;
 		this.y = y;
@@ -41,7 +41,7 @@ public class MenuPlayer {
 			
 			BufferedImage spritesheet = ImageIO.read(
 					getClass().getResourceAsStream(
-							"/Sprites/Player/vaughn.gif"));
+							"/Sprites/Player/" + character + "/spritesheet.gif"));
 			sprites = new ArrayList<BufferedImage[]>();
 			for(int i = 0; i < 7; i ++) //!!!!!!!!! 7 = number of different animations, change for other players.
 			{
@@ -67,7 +67,7 @@ public class MenuPlayer {
 		animation = new Animation();
 		animation.setFrames(sprites.get(WALKING));
 		animation.setDelay(100);
-		walking = true;
+		this.walking = walking;
 		currentAction = WALKING;
 	}
 	
