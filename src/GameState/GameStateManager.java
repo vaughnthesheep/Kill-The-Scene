@@ -28,7 +28,7 @@ public class GameStateManager {
 	public static final String[] characters = 
 							{
 								"VAUGHN",
-								"BRAINZZZ"
+								"BRAINZ"
 							};
 	public final int START_LIVES = 3;
 	public double money;

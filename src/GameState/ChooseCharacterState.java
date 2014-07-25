@@ -36,7 +36,8 @@ public class ChooseCharacterState extends GameState {
 		font = new Font("Arial", Font.PLAIN, 10);
 		menuplayer = new MenuPlayer(GamePanel.WIDTH / 2 - 17, 100, gsm.DEFAULT_CHARACTER, false);
 		menuplayer.walking = false;
-		characters = gsm.characters;
+		characters = GameStateManager.characters;
+		currentName = characters[currentChoice];
 	}
 
 	@Override
@@ -50,11 +51,13 @@ public class ChooseCharacterState extends GameState {
 			{
 				menuplayer = new MenuPlayer(-15, 100, characters[currentChoice], false);
 				switched = true;
+				currentName = characters[currentChoice];
 			}
 			else if(menuplayer.x < -15 && !switched)
 			{
 				menuplayer = new MenuPlayer(GamePanel.WIDTH+15, 100, characters[currentChoice], false);
 				switched = true;
+				currentName = characters[currentChoice];
 			}
 			else if(switched && dx > 0 && menuplayer.x > (GamePanel.WIDTH / 2 - 17))
 			{
@@ -79,7 +82,15 @@ public class ChooseCharacterState extends GameState {
 		g.setColor(new Color(168, 16, 0));
 		g.fillRect(0, 90, GamePanel.WIDTH, 70);
 		fm = g.getFontMetrics(font);
+		rect = fm.getStringBounds("CHOOSE YOUR CHARACTER", g);
+		int textWidth  = (int)(rect.getWidth());
+		int x = (GamePanel.WIDTH - textWidth) / 2;
+		g.drawString("CHOOSE YOUR CHARACTER", x, 50);
+		rect = fm.getStringBounds(currentName, g);
+		textWidth  = (int)(rect.getWidth());
+		x = (GamePanel.WIDTH - textWidth) / 2;
 		g.setColor(Color.WHITE);
+		g.drawString(currentName, x, 205);
 		
 		menuplayer.draw(g);
 	}
@@ -117,7 +128,7 @@ public class ChooseCharacterState extends GameState {
 		if(k == KeyEvent.VK_ENTER)
 		{
 			gsm.character = characters[currentChoice];
-			gsm.setState(gsm.LEVEL_1_1);
+			gsm.setState(GameStateManager.LEVEL_1_1);
 		}
 	}
 	
