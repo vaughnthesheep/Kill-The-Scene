@@ -20,6 +20,12 @@ public class DeadState extends GameState {
 	{
 		this.gsm = gsm;
 		font = new Font("Arial", Font.PLAIN, 10);
+	}
+	
+	
+	public void init()
+	{
+		gsm.decLives(1);
 		try
 		{
 			head =  ImageIO.read(getClass().getResourceAsStream("/Sprites/Player/" + gsm.character + "/head.gif"));
@@ -28,12 +34,6 @@ public class DeadState extends GameState {
 		{
 			e.printStackTrace();
 		}
-	}
-	
-	
-	public void init()
-	{
-		gsm.decLives(1);
 		if(gsm.lives == 0)
 			gsm.setState(GameStateManager.GAMEOVERSTATE);
 		startTime = System.nanoTime();

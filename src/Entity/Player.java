@@ -52,6 +52,8 @@ public class Player extends MapObject {
 	// block
 	private boolean blocking;
 	private int blockAmount;
+	// fix for air blocking
+	private boolean tryingToBlock;
 	
 	// animations
 	private ArrayList<BufferedImage[]> sprites;
@@ -119,6 +121,7 @@ public class Player extends MapObject {
 		kickForce = 4;
 		
 		blockAmount = 5;
+		tryingToBlock = false;
 		
 		// load sprites
 		try{
@@ -164,6 +167,7 @@ public class Player extends MapObject {
 	public int getStrength() {return strength;}
 	public int getMaxStrength() {return maxStrength;}
 	
+	
 	public void setThrowing()
 	{
 		if(currentAction == PUNCHING || currentAction == BLOCKING || currentAction == KICKING || !throwEnabled || strength < projectileCost)
@@ -192,8 +196,15 @@ public class Player extends MapObject {
 	}
 	public void setBlocking(boolean block)
 	{
-		if(currentAction == PUNCHING || currentAction == THROWING || currentAction == KICKING)
+		tryingToBlock = block;
+		if(currentAction == PUNCHING ||
+			currentAction == THROWING ||
+			currentAction == KICKING ||
+			currentAction == JUMPING ||
+			currentAction == FALLING)
+		{
 			return;
+		}
 		blocking = block;
 	}
 	
@@ -261,12 +272,14 @@ public class Player extends MapObject {
 		{
 			dy = jumpStart;
 			falling = true;
+			blocking = false;
 		}
 		
 		// falling
 		if(falling)
 		{
 			dy += fallSpeed;
+			blocking = false;
 			
 			if(dy > 0)
 			{
@@ -299,6 +312,11 @@ public class Player extends MapObject {
 			dy = 0;
 			left = false;
 			right = false;
+		}
+		
+		if(!jumping && !falling && tryingToBlock)
+		{
+			blocking = true;
 		}
 		
 		// check attack has stopped
@@ -401,7 +419,7 @@ public class Player extends MapObject {
 			{
 				currentAction = THROWING;
 				animation.setFrames(sprites.get(THROWING));
-				animation.setDelay(100);
+				animation.setDelay(80);
 				width = 60;
 			}
 		}

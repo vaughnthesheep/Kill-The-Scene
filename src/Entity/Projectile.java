@@ -28,16 +28,16 @@ public class Projectile extends MapObject{
 		moveSpeed = 3.8;
 		angleRatio = 0.71;
 		
-		width = 25;
-		height = 25;
-		cwidth = 20;
-		cheight = 20;
+		width = 10;
+		height = 10;
+		cwidth = 10;
+		cheight = 10;
 		
 		// load sprites
 		try
 		{
-			BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream("/Sprites/Projectiles/cd.gif"));
-			sprites = new BufferedImage[8];
+			BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream("/Sprites/Projectiles/spritesheet" + ".gif"));
+			sprites = new BufferedImage[4];
 			for(int i = 0; i < sprites.length; i++)
 			{
 				sprites[i] = spritesheet.getSubimage(

@@ -424,7 +424,7 @@ public class Brawler extends Enemy {
 	
 	public void think()
 	{
-		if(currentAction == PUNCHING || dying || dead)
+		if(currentAction == PUNCHING || dying || dead || player.isDying())
 		{
 			return;
 		}
