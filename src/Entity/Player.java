@@ -1,6 +1,5 @@
 package Entity;
 
-import Entity.Weapons.Weapon;
 import GameState.GameStateManager;
 import GameState.LevelState;
 import TileMap.*;
@@ -47,11 +46,9 @@ public class Player extends MapObject {
 	
 	// Weapon
 	private boolean swinging;
-	private boolean swingEnabled;
 	private boolean stabbing;
-	private boolean stabEnabled;
-	private Weapon weapon;
-	private boolean equipped;
+	public Weapon weapon;
+	public boolean equipped;
 	
 	private boolean kicking;
 	private int kickDamage;
@@ -283,7 +280,15 @@ public class Player extends MapObject {
 	public int getMaxHealth() {return maxHealth;}
 	public int getStrength() {return strength;}
 	public int getMaxStrength() {return maxStrength;}
-	
+	public int getCurrentAction() {return currentAction;}
+	public boolean isDucking()
+	{
+		if(currentAction == DUCKING)
+		{
+			return true;
+		}
+		return false;
+	}
 	
 	public void setThrowing()
 	{

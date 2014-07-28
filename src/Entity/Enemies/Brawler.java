@@ -141,6 +141,7 @@ public class Brawler extends Enemy {
 		if((System.nanoTime() - lastPunch) / 1000000 < punchReload || dying)
 			return;
 		punching = true;
+		checkAttack(player);
 		lastPunch = System.nanoTime();
 	}
 	

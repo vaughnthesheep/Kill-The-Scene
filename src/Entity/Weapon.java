@@ -1,11 +1,10 @@
-package Entity.Weapons;
+package Entity;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import TileMap.TileMap;
-import Entity.MapObject;
 
 public abstract class Weapon extends MapObject{
 
@@ -37,5 +36,10 @@ public abstract class Weapon extends MapObject{
 	public void draw(Graphics2D g)
 	{
 		super.draw(g);
+	}
+	
+	public void setCurrentAction(int i)
+	{
+		currentAction = i;
 	}
 }

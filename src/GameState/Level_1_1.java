@@ -2,6 +2,7 @@ package GameState;
 
 import Entity.*;
 import Entity.Enemies.Brawler;
+import Entity.Items.WeaponItem;
 import Entity.Weapons.WoodenBat;
 import TileMap.*;
 import java.awt.*;
@@ -13,7 +14,6 @@ import main.Soundtrack;
 
 public class Level_1_1 extends LevelState {
 	
-	WoodenBat bat;
 	public Level_1_1(GameStateManager gsm)
 	{
 		super(gsm);
@@ -23,24 +23,23 @@ public class Level_1_1 extends LevelState {
 	public void init()
 	{
 		tileMap = new TileMap(30);
+		fallLimit = 320;
 		tileMap.loadTiles("/Tilesets/grasstileset.gif");
 		tileMap.loadMap("/Maps/level1-1.map");
 		tileMap.setPosition(0, 0);
 		bg = new Background("/Backgrounds/grassbg1.gif", 0.1);
-		fallLimit = 350;
-		
-		bat = new WoodenBat(tileMap);
-		player = new Player(tileMap, gsm, this, bat); // test
+		player = new Player(tileMap, gsm, this);
 		player.setPosition(100,100);
 		hud = new HUD(player);
 		
 		populateEnemies();
+		populateItems();
 		
 		Soundtrack.setSong("Charlsewood.wav");
 		Soundtrack.play();
 	}
 	
-	private void populateEnemies()
+	public void populateEnemies()
 	{
 		enemies = new ArrayList<Enemy>();
 		Brawler b;
@@ -58,40 +57,25 @@ public class Level_1_1 extends LevelState {
 			b.setPosition(points[i].x, points[i].y);
 			enemies.add(b);
 		}
-		
 	}
 	
-	public ArrayList<Enemy> getEnemies()
+	public void populateItems()
 	{
-		return enemies;
+		items = new ArrayList<Item>();
+		WeaponItem w = new WeaponItem(tileMap, player, WeaponItem.WOODEN_BAT);
+		w.setPosition(200,100);
+		items.add(w);
 	}
 	
 	public void update()
 	{
-		player.update();
-		tileMap.setPosition(
-			GamePanel.WIDTH / 2 - player.getx(),
-			GamePanel.HEIGHT / 2 - player.gety()
-		);
-		bg.setPosition(tileMap.getx(), tileMap.gety());
-		
-		updateEnemies();
-		
-	}
-	public void draw(Graphics2D g)
-	{
-		bg.draw(g);
-		tileMap.draw(g);
-		player.draw(g);
-		
-		for(int i = 0; i < enemies.size(); i ++)
-		{
-			enemies.get(i).draw(g);
-		}
-		
-		hud.draw(g);
+		super.update();
 	}
 	
+	public void draw(Graphics2D g)
+	{
+		super.draw(g);
+	}
 	
 	public void keyPressed(int k)
 	{
