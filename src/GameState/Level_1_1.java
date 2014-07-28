@@ -2,6 +2,7 @@ package GameState;
 
 import Entity.*;
 import Entity.Enemies.Brawler;
+import Entity.Weapons.WoodenBat;
 import TileMap.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -11,7 +12,8 @@ import main.Soundtrack;
 
 
 public class Level_1_1 extends LevelState {
-
+	
+	WoodenBat bat;
 	public Level_1_1(GameStateManager gsm)
 	{
 		super(gsm);
@@ -27,7 +29,8 @@ public class Level_1_1 extends LevelState {
 		bg = new Background("/Backgrounds/grassbg1.gif", 0.1);
 		fallLimit = 350;
 		
-		player = new Player(tileMap, gsm, this);
+		bat = new WoodenBat(tileMap);
+		player = new Player(tileMap, gsm, this, bat); // test
 		player.setPosition(100,100);
 		hud = new HUD(player);
 		

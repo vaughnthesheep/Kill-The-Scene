@@ -1,5 +1,6 @@
 package Entity;
 
+import Entity.Weapons.Weapon;
 import GameState.GameStateManager;
 import GameState.LevelState;
 import TileMap.*;
@@ -44,6 +45,14 @@ public class Player extends MapObject {
 	private int punchForce;
 	private boolean punchEnabled;
 	
+	// Weapon
+	private boolean swinging;
+	private boolean swingEnabled;
+	private boolean stabbing;
+	private boolean stabEnabled;
+	private Weapon weapon;
+	private boolean equipped;
+	
 	private boolean kicking;
 	private int kickDamage;
 	private int kickRange;
@@ -60,7 +69,7 @@ public class Player extends MapObject {
 	
 	// num frames per action (check player sprites)
 	private final int[] numFrames = {
-		2, 4, 1, 3, 1, 3, 3, 3, 1, 1, 1
+		2, 4, 1, 3, 1, 3, 3, 3, 3, 3, 1, 1, 1
 	};
 	
 	// animation actions
@@ -71,10 +80,26 @@ public class Player extends MapObject {
 	private static final int DUCKING = 4;
 	private static final int THROWING = 5;
 	private static final int PUNCHING = 6;
-	private static final int KICKING = 7;
-	private static final int BLOCKING = 8;
-	private static final int DYING1 = 9;
-	private static final int DYING2 = 10;
+	private static final int SWINGING = 7;
+	private static final int STABBING = 8;
+	private static final int KICKING = 9;
+	private static final int BLOCKING = 10;
+	private static final int DYING1 = 11;
+	private static final int DYING2 = 12;
+	
+	public static final int IDLE_DELAY = 400;
+	public static final int WALKING_DELAY = 100;
+	public static final int JUMPING_DELAY = -1;
+	public static final int FALLING_DELAY = 100;
+	public static final int DUCKING_DELAY = -1;
+	public static final int THROWING_DELAY = 80;
+	public static final int PUNCHING_DELAY = 50;
+	public static final int SWINGING_DELAY = 80;
+	public static final int STABBING_DELAY = 80;
+	public static final int KICKING_DELAY = 120;
+	public static final int BLOCKING_DELAY = -1;
+	public static final int DYING1_DELAY = -1;
+	public static final int DYING2_DELAY = -1;
 	
 	private final long DYING_TIME = 1600;
 	
@@ -84,6 +109,8 @@ public class Player extends MapObject {
 		super(tm);
 		this.gsm = gsm;
 		this.level = level;
+		weapon = null;
+		equipped = false;
 		
 		width = 30;
 		height = 50;
@@ -134,7 +161,7 @@ public class Player extends MapObject {
 				BufferedImage[] bi = new BufferedImage[numFrames[i]];
 				for(int j = 0; j < numFrames[i]; j++)
 				{
-					if(i != THROWING && i != PUNCHING && i != KICKING && i != BLOCKING && i != DYING1 && i != DYING2)
+					if(i != THROWING && i != PUNCHING && i != KICKING && i != SWINGING && i != STABBING && i != BLOCKING && i != DYING1 && i != DYING2)
 					{// sprites for scratch are 60 px wide, not 30
 						bi[j] = spritesheet.getSubimage(j*width, i*height, width, height);
 					}
@@ -162,6 +189,96 @@ public class Player extends MapObject {
 		
 	}
 	
+	public Player(TileMap tm, GameStateManager gsm, LevelState level, Weapon weapon)
+	{
+		super(tm);
+		this.gsm = gsm;
+		this.level = level;
+		this.weapon = weapon;
+		equipped = true;
+		
+		width = 30;
+		height = 50;
+		cwidth = 20;
+		cheight = 40;
+		
+		moveSpeed = 0.4;
+		airMoveSpeed = 0.2;
+		maxSpeed = 1.6;
+		stopSpeed = 0.4;
+		fallSpeed = 0.20;
+		maxFallSpeed = 4.0;
+		jumpStart = -5.5;
+		stopJumpSpeed = 0.3;
+		maxFlinchTime = 1000;
+		
+		facingRight = true;
+		
+		health = maxHealth = 25;
+		strength = maxStrength = 25;
+		
+		projectileCost = 5;
+		projectileDamage = 5;
+		projectileForce = 3;
+		projectiles = new ArrayList<Projectile>();
+		throwEnabled = true;
+		
+		punchDamage = 5;
+		punchRange = 30;
+		punchForce = 2;
+		punchEnabled = true; // used for swinging as well
+		
+		kickDamage = 5;
+		kickRange = 50;
+		kickForce = 4;
+		
+		blockAmount = 5;
+		tryingToBlock = false;
+		
+		// load sprites
+		try{
+			BufferedImage spritesheet = ImageIO.read(
+					getClass().getResourceAsStream(
+							"/Sprites/Player/" + gsm.character + "/spritesheet.gif"));
+			sprites = new ArrayList<BufferedImage[]>();
+			for(int i = 0; i < numFrames.length; i ++)
+			{
+				BufferedImage[] bi = new BufferedImage[numFrames[i]];
+				for(int j = 0; j < numFrames[i]; j++)
+				{
+					if(i != THROWING && i != PUNCHING && i != KICKING && i != SWINGING && i != STABBING && i != BLOCKING && i != DYING1 && i != DYING2)
+					{// sprites for scratch are 60 px wide, not 30
+						bi[j] = spritesheet.getSubimage(j*width, i*height, width, height);
+					}
+					else if(i == DYING2)
+					{
+						bi[j] = spritesheet.getSubimage(j*width*2 + width*2, i*height - height, width*2, height);
+					}
+					else
+					{
+						bi[j] = spritesheet.getSubimage(j*width*2, i*height, width*2, height);
+					}
+				}
+				sprites.add(bi);
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		animation = new Animation();
+		currentAction = IDLE;
+		animation.setFrames(sprites.get(IDLE));
+		animation.setDelay(IDLE_DELAY);
+		if(equipped)
+		{
+			weapon.animation.setFrames(weapon.sprites.get(IDLE));
+			weapon.animation.setDelay(IDLE_DELAY);
+		}
+		
+	}
+	
 	public int getHealth() {return health;}
 	public int getMaxHealth() {return maxHealth;}
 	public int getStrength() {return strength;}
@@ -170,7 +287,7 @@ public class Player extends MapObject {
 	
 	public void setThrowing()
 	{
-		if(currentAction == PUNCHING || currentAction == BLOCKING || currentAction == KICKING || !throwEnabled || strength < projectileCost)
+		if(currentAction == PUNCHING || currentAction == BLOCKING || currentAction == KICKING || currentAction == SWINGING || currentAction == STABBING || !throwEnabled || strength < projectileCost)
 			return;
 		throwing = true;
 		throwEnabled = false;
@@ -178,7 +295,7 @@ public class Player extends MapObject {
 	
 	public void setPunching()
 	{
-		if(currentAction == THROWING || currentAction == KICKING || currentAction == BLOCKING || !punchEnabled)
+		if(currentAction == THROWING || currentAction == KICKING || currentAction == BLOCKING || currentAction == SWINGING || currentAction == STABBING || !punchEnabled)
 			return;
 		if(currentAction != PUNCHING)
 		{
@@ -194,6 +311,31 @@ public class Player extends MapObject {
 			punchEnabled = false;
 		}
 	}
+	public void setSwinging()
+	{
+		if(currentAction == THROWING || currentAction == KICKING || currentAction == BLOCKING || currentAction == PUNCHING || !punchEnabled)
+			return;
+		if(currentAction != SWINGING && currentAction != STABBING && currentAction != KICKING)
+		{
+			swinging = true;
+			checkAttack(level.getEnemies());
+			punchEnabled = false;
+		}
+		else if(currentAction == SWINGING)
+		{
+			swinging = false;
+			stabbing = true;
+			checkAttack(level.getEnemies());
+			punchEnabled = false;
+		}
+		else
+		{
+			stabbing = false;
+			kicking = true;
+			checkAttack(level.getEnemies());
+			punchEnabled = false;
+		}
+	}
 	public void setBlocking(boolean block)
 	{
 		tryingToBlock = block;
@@ -201,7 +343,9 @@ public class Player extends MapObject {
 			currentAction == THROWING ||
 			currentAction == KICKING ||
 			currentAction == JUMPING ||
-			currentAction == FALLING)
+			currentAction == FALLING ||
+			currentAction == SWINGING ||
+			currentAction == STABBING)
 		{
 			return;
 		}
@@ -255,12 +399,14 @@ public class Player extends MapObject {
 		}
 		
 		// cannot move while attacking or ducking (unless in air)
-		if((currentAction == PUNCHING || 
-				currentAction == THROWING || 
+		if((currentAction == PUNCHING ||
+				currentAction == THROWING ||
 				currentAction == KICKING ||
-				currentAction == DUCKING || 
-				currentAction == BLOCKING || 
-				currentAction == DYING1 || 
+				currentAction == SWINGING ||
+				currentAction == STABBING ||
+				currentAction == DUCKING ||
+				currentAction == BLOCKING ||
+				currentAction == DYING1 ||
 				currentAction == DYING2) && 
 				!(jumping || falling))
 		{
@@ -303,6 +449,10 @@ public class Player extends MapObject {
 		getNextPosition();
 		checkTileMapCollision();
 		setPosition(xtemp, ytemp);
+		if(equipped)
+		{
+			weapon.setPosition(xtemp, ytemp);
+		}
 		
 		// check if fell off cliff
 		if(ytemp > gsm.getState().getFallLimit() && !dying)
@@ -332,6 +482,20 @@ public class Player extends MapObject {
 			if(animation.hasPlayedOnce())
 			{
 				throwing = false;
+			}
+		}
+		if(currentAction == SWINGING)
+		{
+			if(animation.hasPlayedOnce())
+			{
+				swinging = false;
+			}
+		}
+		if(currentAction == STABBING)
+		{
+			if(animation.hasPlayedOnce())
+			{
+				stabbing = false;
 			}
 		}
 		if(currentAction == KICKING)
@@ -385,7 +549,7 @@ public class Player extends MapObject {
 			{
 				currentAction = DYING1;
 				animation.setFrames(sprites.get(DYING1));
-				animation.setDelay(-1);
+				animation.setDelay(DYING1_DELAY);
 				width = 60;
 			}
 			else if(currentAction == DYING1)
@@ -394,7 +558,7 @@ public class Player extends MapObject {
 				{
 					currentAction = DYING2;
 					animation.setFrames(sprites.get(DYING2));
-					animation.setDelay(-1);
+					animation.setDelay(DYING2_DELAY);
 				}
 			}
 			// set to DeadState
@@ -409,8 +573,13 @@ public class Player extends MapObject {
 			{
 				currentAction = PUNCHING;
 				animation.setFrames(sprites.get(PUNCHING));
-				animation.setDelay(50);
+				animation.setDelay(PUNCHING_DELAY);
 				width = 60;
+				if(equipped)
+				{
+					weapon.animation.setFrames(weapon.sprites.get(PUNCHING));
+					weapon.animation.setDelay(PUNCHING_DELAY);
+				}
 			}
 		}
 		else if(throwing)
@@ -419,8 +588,43 @@ public class Player extends MapObject {
 			{
 				currentAction = THROWING;
 				animation.setFrames(sprites.get(THROWING));
-				animation.setDelay(80);
+				animation.setDelay(THROWING_DELAY);
 				width = 60;
+				if(equipped)
+				{
+					weapon.animation.setFrames(weapon.sprites.get(THROWING));
+					weapon.animation.setDelay(THROWING_DELAY);
+				}
+			}
+		}
+		else if(swinging)
+		{
+			if(currentAction != SWINGING)
+			{
+				currentAction = SWINGING;
+				animation.setFrames(sprites.get(SWINGING));
+				animation.setDelay(SWINGING_DELAY);
+				width = 60;
+				if(equipped)
+				{
+					weapon.animation.setFrames(weapon.sprites.get(SWINGING));
+					weapon.animation.setDelay(SWINGING_DELAY);
+				}
+			}
+		}
+		else if(stabbing)
+		{
+			if(currentAction != STABBING)
+			{
+				currentAction = STABBING;
+				animation.setFrames(sprites.get(STABBING));
+				animation.setDelay(STABBING_DELAY);
+				width = 60;
+				if(equipped)
+				{
+					weapon.animation.setFrames(weapon.sprites.get(STABBING));
+					weapon.animation.setDelay(STABBING_DELAY);
+				}
 			}
 		}
 		else if(kicking)
@@ -429,8 +633,13 @@ public class Player extends MapObject {
 			{
 				currentAction = KICKING;
 				animation.setFrames(sprites.get(KICKING));
-				animation.setDelay(120);
+				animation.setDelay(KICKING_DELAY);
 				width = 60;
+				if(equipped)
+				{
+					weapon.animation.setFrames(weapon.sprites.get(KICKING));
+					weapon.animation.setDelay(KICKING_DELAY);
+				}
 			}
 		}
 		else if(blocking)
@@ -439,8 +648,13 @@ public class Player extends MapObject {
 			{
 				currentAction = BLOCKING;
 				animation.setFrames(sprites.get(BLOCKING));
-				animation.setDelay(-1);
+				animation.setDelay(BLOCKING_DELAY);
 				width = 60;
+				if(equipped)
+				{
+					weapon.animation.setFrames(weapon.sprites.get(BLOCKING));
+					weapon.animation.setDelay(BLOCKING_DELAY);
+				}
 			}
 		}
 		else if(dy > 0)
@@ -449,8 +663,13 @@ public class Player extends MapObject {
 			{
 				currentAction = FALLING;
 				animation.setFrames(sprites.get(FALLING));
-				animation.setDelay(100);
+				animation.setDelay(FALLING_DELAY);
 				width = 30;
+				if(equipped)
+				{
+					weapon.animation.setFrames(weapon.sprites.get(BLOCKING));
+					weapon.animation.setDelay(BLOCKING_DELAY);
+				}
 			}
 		}
 		else if(dy < 0)
@@ -459,8 +678,13 @@ public class Player extends MapObject {
 			{
 				currentAction = JUMPING;
 				animation.setFrames(sprites.get(JUMPING));
-				animation.setDelay(-1);
+				animation.setDelay(JUMPING_DELAY);
 				width = 30;
+				if(equipped)
+				{
+					weapon.animation.setFrames(weapon.sprites.get(JUMPING));
+					weapon.animation.setDelay(JUMPING_DELAY);
+				}
 			}
 		}
 		else if(left || right)
@@ -469,8 +693,13 @@ public class Player extends MapObject {
 			{
 				currentAction = WALKING;
 				animation.setFrames(sprites.get(WALKING));
-				animation.setDelay(100);
+				animation.setDelay(WALKING_DELAY);
 				width = 30;
+				if(equipped)
+				{
+					weapon.animation.setFrames(weapon.sprites.get(WALKING));
+					weapon.animation.setDelay(WALKING_DELAY);
+				}
 			}
 		}
 		else if(down)
@@ -479,8 +708,13 @@ public class Player extends MapObject {
 			{
 				currentAction = DUCKING;
 				animation.setFrames(sprites.get(DUCKING));
-				animation.setDelay(-1);
+				animation.setDelay(DUCKING_DELAY);
 				width = 30;
+				if(equipped)
+				{
+					weapon.animation.setFrames(weapon.sprites.get(DUCKING));
+					weapon.animation.setDelay(DUCKING_DELAY);
+				}
 			}
 		}
 		else
@@ -489,18 +723,34 @@ public class Player extends MapObject {
 			{
 				currentAction = IDLE;
 				animation.setFrames(sprites.get(IDLE));
-				animation.setDelay(400);
+				animation.setDelay(IDLE_DELAY);
 				width = 30;
+				if(equipped)
+				{
+					weapon.animation.setFrames(weapon.sprites.get(IDLE));
+					weapon.animation.setDelay(IDLE_DELAY);
+				}
 			}
 		}
 		
 		animation.update();
+		if(equipped)
+		{
+			weapon.animation.update();
+		}
 		
 		// set direction
-		if(currentAction != PUNCHING && currentAction != THROWING && currentAction != KICKING)
+		if(currentAction != PUNCHING && currentAction != THROWING && currentAction != KICKING && currentAction != SWINGING && currentAction != STABBING)
 		{
-			if(right) facingRight = true;
-			if(left) facingRight = false;
+			if(right)
+				facingRight = true;
+			if(left)
+				facingRight = false;
+			
+			if(equipped)
+			{
+				weapon.facingRight = facingRight;
+			}
 		}
 		
 		ArrayList<Enemy> enemies = level.getEnemies();
@@ -549,6 +799,56 @@ public class Player extends MapObject {
 						e.gety() < y + height/2
 					){
 						e.hit(punchDamage, punchForce, true);
+					}
+				}
+			}
+			else if(swinging)
+			{
+				if(facingRight)
+				{
+					if(
+						e.getx() > x &&
+						e.getx() < x + weapon.swingRange &&
+						e.gety() > y - height/2 &&
+						e.gety() < y + height/2
+					){
+						e.hit(weapon.swingDamage, weapon.swingForce, false);
+					}
+				}
+				else
+				{
+					if(
+						e.getx() < x &&
+						e.getx() > x - weapon.swingRange &&
+						e.gety() > y - height/2 &&
+						e.gety() < y + height/2
+					){
+						e.hit(weapon.swingDamage, weapon.swingForce, true);
+					}
+				}
+			}
+			else if(stabbing)
+			{
+				if(facingRight)
+				{
+					if(
+						e.getx() > x &&
+						e.getx() < x + weapon.stabRange &&
+						e.gety() > y - height/2 &&
+						e.gety() < y + height/2
+					){
+						e.hit(weapon.stabDamage, weapon.stabForce, false);
+					}
+				}
+				else
+				{
+					if(
+						e.getx() < x &&
+						e.getx() > x - weapon.stabRange &&
+						e.gety() > y - height/2 &&
+						e.gety() < y + height/2
+					){
+						e.hit(weapon.stabDamage, weapon.stabForce, true);
 					}
 				}
 			}
@@ -638,6 +938,7 @@ public class Player extends MapObject {
 	public void dying()
 	{
 		dying = true;
+		weapon = null;
 		dyingTimer = System.nanoTime();
 		Soundtrack.stop();
 		Soundtrack.setSong("Dead.wav");
@@ -671,6 +972,10 @@ public class Player extends MapObject {
 		}
 		
 		super.draw(g);
+		if(equipped)
+		{
+			weapon.draw(g);
+		}
 	}
 	
 	public void keyPressed(int k)
@@ -683,7 +988,13 @@ public class Player extends MapObject {
 			if(k == KeyEvent.VK_DOWN) setDown(true);
 			if(k == KeyEvent.VK_W) setJumping(true);
 			if(k == KeyEvent.VK_E) setBlocking(true);
-			if(k == KeyEvent.VK_R) setPunching();
+			if(k == KeyEvent.VK_R)
+			{
+				if(!equipped)
+					setPunching();
+				else
+					setSwinging();
+			}
 			if(k == KeyEvent.VK_F) setThrowing();
 		}
 	}
@@ -694,7 +1005,11 @@ public class Player extends MapObject {
 		if(k == KeyEvent.VK_UP) setUp(false);
 		if(k == KeyEvent.VK_DOWN) setDown(false);
 		if(k == KeyEvent.VK_W) setJumping(false);
-		if(k == KeyEvent.VK_E) setBlocking(false);
+		if(k == KeyEvent.VK_E)
+		{
+			setBlocking(false);
+			tryingToBlock = false;
+		}
 		if(k == KeyEvent.VK_R) punchEnabled = true;
 		if(k == KeyEvent.VK_F) throwEnabled = true;
 		
