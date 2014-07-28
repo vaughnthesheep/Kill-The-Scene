@@ -3,11 +3,9 @@ package GameState;
 import Entity.*;
 import Entity.Enemies.Brawler;
 import Entity.Items.WeaponItem;
-import Entity.Weapons.WoodenBat;
 import TileMap.*;
 import java.awt.*;
 import java.util.ArrayList;
-import main.GamePanel;
 import main.Soundtrack;
 
 
@@ -24,10 +22,10 @@ public class Level_1_1 extends LevelState {
 	{
 		tileMap = new TileMap(30);
 		fallLimit = 320;
-		tileMap.loadTiles("/Tilesets/grasstileset.gif");
-		tileMap.loadMap("/Maps/level1-1.map");
+		tileMap.loadTiles("/Tilesets/charlsewood.gif");
+		tileMap.loadMap("/Maps/cwoodtest.map");
 		tileMap.setPosition(0, 0);
-		bg = new Background("/Backgrounds/grassbg1.gif", 0.1);
+		bg = new Background("/Backgrounds/cwoodbg.gif", 0.1);
 		player = new Player(tileMap, gsm, this);
 		player.setPosition(100,100);
 		hud = new HUD(player);

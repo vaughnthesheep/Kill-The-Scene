@@ -90,9 +90,9 @@ public class Player extends MapObject {
 	public static final int FALLING_DELAY = 100;
 	public static final int DUCKING_DELAY = -1;
 	public static final int THROWING_DELAY = 80;
-	public static final int PUNCHING_DELAY = 50;
+	public static final int PUNCHING_DELAY = 80;
 	public static final int SWINGING_DELAY = 80;
-	public static final int STABBING_DELAY = 80;
+	public static final int STABBING_DELAY = 100;
 	public static final int KICKING_DELAY = 120;
 	public static final int BLOCKING_DELAY = -1;
 	public static final int DYING1_DELAY = -1;
@@ -446,6 +446,7 @@ public class Player extends MapObject {
 			}
 		}
 		
+		
 	}
 	
 	public void update()
@@ -453,6 +454,7 @@ public class Player extends MapObject {
 		// update position
 		getNextPosition();
 		checkTileMapCollision();
+		checkMapEdge();
 		setPosition(xtemp, ytemp);
 		if(equipped)
 		{
@@ -463,6 +465,8 @@ public class Player extends MapObject {
 		if(ytemp > gsm.getState().getFallLimit() && !dying)
 		{
 			dying();
+			weapon = null;
+			equipped = false;
 			dx = 0;
 			dy = 0;
 			left = false;
@@ -948,6 +952,18 @@ public class Player extends MapObject {
 		Soundtrack.stop();
 		Soundtrack.setSong("Dead.wav");
 		Soundtrack.playOnce();
+	}
+	
+	private void checkMapEdge()
+	{
+		if(xtemp > (tileMap.getNumCols() * tileMap.getTileSize()) - width/2)
+		{
+			xtemp = (tileMap.getNumCols() * tileMap.getTileSize()) - width/2;
+		}
+		if(xtemp < 0 + width/2)
+		{
+			xtemp = width/2;
+		}
 	}
 	
 	public boolean isDying()
