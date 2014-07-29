@@ -43,10 +43,10 @@ public class Level_1_1 extends LevelState {
 		Brawler b;
 		Point[] points = new Point[]{
 			new Point(250, 100),
-			new Point(860, 200),
-			new Point(1525, 200),
-			new Point(1680, 200),
-			new Point(1800, 200)
+			new Point(860, 100),
+			new Point(1525, 100),
+			new Point(1680, 100),
+			new Point(1800, 100)
 		};
 		
 		for(int i = 0; i < points.length; i++)
